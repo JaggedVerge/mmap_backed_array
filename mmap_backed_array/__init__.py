@@ -1,3 +1,3 @@
-class mmaparray:
-    """mmap backed Array like data structure"""
-    pass
+from .mmap_array import *
+
+__all__ = mmap_array.__all__
