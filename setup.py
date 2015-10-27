@@ -12,4 +12,5 @@ setup(name='mmap_backed_array',
           'Programming Language :: Python',
       ],
       keywords='mmap array',
+      install_requires=['cffi'],
 )
