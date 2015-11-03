@@ -58,7 +58,15 @@ class mmaparray:
         if kwargs:
             raise TypeError("unexpected keyword arguments %r" % kwargs.keys())
 
-
+        # handle default mmap, validate and store mmap, compute size
+        if mmap is None:
+            raise NotImplementedError("TODO: create default mmap")
+        elif not isinstance(mmap, _mmap.mmap):
+            raise TypeError("expected an mmap instance, got %r" % mmap)
+        else:
+            size = len(mmap)
+            size -= size % self.itemsize
+        self._mmap = mmap
 
     def __len__(self):
         return self._length
