@@ -41,6 +41,24 @@ class mmaparray:
             raise ValueError
         self._itemtype = itemtype
         self._typecode = typecode
+        self._ptrtype = ffi.typeof( ffi.getctype(itemtype, '*') )
+        self._itemsize = ffi.sizeof(itemtype)
+
+        # validate *args
+        if len(args) > 1:
+            raise TypeError("expected 1 or 2 arguments, got %d" % (1+len(args)))
+        if len(args) == 1:
+            data = args[0]
+            iter(data) # verify that args is iterable
+        else:
+            data = None
+
+        # validate **kwargs
+        mmap = kwargs.pop('mmap', None)
+        if kwargs:
+            raise TypeError("unexpected keyword arguments %r" % kwargs.keys())
+
+
 
     def __len__(self):
         return self._length
