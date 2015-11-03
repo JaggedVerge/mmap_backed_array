@@ -3,6 +3,15 @@ import mmap as _mmap
 
 from cffi import FFI
 ffi = FFI()
+ffi.cdef("""
+typedef unsigned int mode_t;
+int shm_open(const char *name, int oflag, mode_t mode);
+int shm_unlink(const char *name);
+""")
+C = ffi.verify("""
+#include <sys/mman.h>
+""", libraries=["rt"])
+
 
 _typecode_to_type = {
     'c': ffi.typeof('char'),         'u': ffi.typeof('wchar_t'),
