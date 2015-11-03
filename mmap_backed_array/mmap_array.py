@@ -41,3 +41,7 @@ class mmaparray:
             raise ValueError
         self._itemtype = itemtype
         self._typecode = typecode
+
+    def __len__(self):
+        return self._length
+
