@@ -96,6 +96,17 @@ class mmaparray:
         self._mmap = mmap
         self._setsize(size)
 
+        #append the data
+        if data is not None:
+            if isinstance(data, bytes):
+                self._frombytes(data)
+            elif isinstance(data, str):
+                self._fromstring(data)
+            else:
+                raise NotImplementedError()
+
+        return self
+
     def _setsize(self, size):
         """Set the size of the mmap object"""
         self._size = size
@@ -106,3 +117,8 @@ class mmaparray:
     def __len__(self):
         return self._length
 
+    def _frombytes(self, data):
+        raise NotImplementedError()
+
+    def _fromstr(self, data):
+        raise NotImplementedError()
