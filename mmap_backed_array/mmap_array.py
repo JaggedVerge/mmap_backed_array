@@ -1,5 +1,6 @@
 """mmap backed array datastructure"""
 import mmap as _mmap
+import os
 
 from cffi import FFI
 ffi = FFI()
@@ -25,6 +26,31 @@ _typecode_to_type = {
 __all__ = [
     "mmaparray",
 ]
+
+def anon_mmap(data):
+    data = memoryview(data)
+    size = len(data)
+    name_str = '/{}'.format(os.getpid())
+    name = bytes(name_str, 'ascii')
+    fd = C.shm_open(name, os.O_RDWR|os.O_CREAT|os.O_EXCL, 0o600)
+    if fd < 0:
+        errno = ffi.errno
+        raise OSError(errno, os.seterror(errno))
+    try:
+        if C.shm_unlink(name) != 0:
+            errno = ffi.errno
+            raise OSError(errno, os.seterror(errno))
+        os.write(fd, data)
+        result = _mmap.mmap(fd, size)
+    finally:
+        os.close(fd)
+    return result
+
+
+import ctypes
+def address_of_buffer(buf):
+    """Find the address of a buffer"""
+    return ctypes.addressof(ctypes.c_char.from_buffer(buf))
 
 class mmaparray:
     """mmap backed Array like data structure"""
