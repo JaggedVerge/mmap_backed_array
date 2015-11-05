@@ -2,6 +2,7 @@
 Tests are a modified version of the pypy array unit tests."""
 import sys
 import py
+from pytest import raises
 
 class BaseArrayTests:
     def test_ctor(self):
