@@ -86,13 +86,22 @@ class mmaparray:
 
         # handle default mmap, validate and store mmap, compute size
         if mmap is None:
-            raise NotImplementedError("TODO: create default mmap")
+            mmap = anon_mmap(b'\x00')
+            size = 0
         elif not isinstance(mmap, _mmap.mmap):
             raise TypeError("expected an mmap instance, got %r" % mmap)
         else:
             size = len(mmap)
             size -= size % self.itemsize
         self._mmap = mmap
+        self._setsize(size)
+
+    def _setsize(self, size):
+        """Set the size of the mmap object"""
+        self._size = size
+        self._length = size//self._itemsize
+        pointer_to_beginning_of_mmap_buffer = address_of_buffer(self._mmap)#TODO: can't use address of buffer from _multiprocessing
+        self._data = ffi.cast(self._ptrtype, pointer_to_beginning_of_mmap_buffer)
 
     def __len__(self):
         return self._length
