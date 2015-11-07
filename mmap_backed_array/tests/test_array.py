@@ -12,10 +12,12 @@ class BaseArrayTests:
         raises(TypeError, self.array, 'hi')
         raises(TypeError, self.array, 1)
         raises(ValueError, self.array, 'q')
-
         a = self.array('c')
+        assert len(a) == 0
         raises(TypeError, a.append, 7)
+        assert len(a) == 0
         raises(TypeError, a.append, 'hi')
+        assert len(a) == 0
         a.append(b'h')
         assert a[0] == b'h'
         assert type(a[0]) is bytes
