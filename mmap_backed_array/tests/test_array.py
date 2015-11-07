@@ -16,23 +16,23 @@ class BaseArrayTests:
         a = self.array('c')
         raises(TypeError, a.append, 7)
         raises(TypeError, a.append, 'hi')
+        a.append(b'h')
+        assert a[0] == b'h'
+        assert type(a[0]) is bytes
+        assert len(a) == 1
+
+        a = self.array('u')
+        raises(TypeError, a.append, 7)
+        raises(TypeError, a.append, b'hi')
         a.append('h')
         assert a[0] == 'h'
         assert type(a[0]) is str
         assert len(a) == 1
 
-        a = self.array('u')
-        raises(TypeError, a.append, 7)
-        raises(TypeError, a.append, u'hi')
-        a.append(unicode('h'))
-        assert a[0] == unicode('h')
-        assert type(a[0]) is unicode
-        assert len(a) == 1
-
-        a = self.array('c', ('a', 'b', 'c'))
-        assert a[0] == 'a'
-        assert a[1] == 'b'
-        assert a[2] == 'c'
+        a = self.array('c', (b'a', b'b', b'c'))
+        assert a[0] == b'a'
+        assert a[1] == b'b'
+        assert a[2] == b'c'
         assert len(a) == 3
 
         b = self.array('c', a)
