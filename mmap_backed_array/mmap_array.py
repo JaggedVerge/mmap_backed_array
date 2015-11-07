@@ -122,13 +122,27 @@ class mmaparray:
         assert size >= 0
         if size == 0:
             self._mmap.resize(1)
-            self._mmap[0] = b'\x00'
+            #self._mmap[0] = b'\x00' #This gives a typeerror in cpython 3.4
+            self._mmap[0] = 0
         else:
             self._mmap.resize(size)
         self._setsize(size)
 
+
+    #Array API
     def __len__(self):
         return self._length
+
+    def __getitem__(self, index):
+        if isinstance(index, int):
+            if index < 0:
+                index += self._length
+                if index < 0:
+                    raise IndexError
+            elif index >= self._length:
+                raise IndexError
+            return self._data[index]
+        raise NotImplementedError() #TODO: implement slices
 
     def _frombytes(self, data):
         raise NotImplementedError()
