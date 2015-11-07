@@ -1,7 +1,6 @@
 """mmap backed array datastructure"""
 import mmap as _mmap
-import os
-import operator
+import array, os, operator
 
 from cffi import FFI
 ffi = FFI()
@@ -104,7 +103,8 @@ class mmaparray:
             elif isinstance(data, str):
                 self._fromstring(data)
             else:
-                raise NotImplementedError()
+                data = array.array(typecode, data)
+                self._frombytes(memoryview(data))
 
         return self
 
@@ -145,7 +145,18 @@ class mmaparray:
         raise NotImplementedError() #TODO: implement slices
 
     def _frombytes(self, data):
-        raise NotImplementedError()
+        """Fill the mmap array from a bytes datasouce
+        :data: the data
+        """
+        bytesize = len(data)
+        if bytesize%self.itemsize != 0:
+            raise ValueError
+        if bytesize:
+            pos = self._size
+            assert pos % self.itemsize == 0
+            self._resize(pos+bytesize)
+            ffi.cast("char*", self._data)[pos:pos+bytesize] = bytes(data)
+
 
     def _fromstr(self, data):
         raise NotImplementedError()
