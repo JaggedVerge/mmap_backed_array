@@ -1,6 +1,7 @@
 """mmap backed array datastructure"""
 import mmap as _mmap
 import os
+import operator
 
 from cffi import FFI
 ffi = FFI()
@@ -114,6 +115,18 @@ class mmaparray:
         pointer_to_beginning_of_mmap_buffer = address_of_buffer(self._mmap)#TODO: can't use address of buffer from _multiprocessing
         self._data = ffi.cast(self._ptrtype, pointer_to_beginning_of_mmap_buffer)
 
+    def _resize(self, size):
+        """Resize the mmap object
+        :size: new size
+        """
+        assert size >= 0
+        if size == 0:
+            self._mmap.resize(1)
+            self._mmap[0] = b'\x00'
+        else:
+            self._mmap.resize(size)
+        self._setsize(size)
+
     def __len__(self):
         return self._length
 
@@ -122,3 +135,18 @@ class mmaparray:
 
     def _fromstr(self, data):
         raise NotImplementedError()
+
+    def append(self, x):
+        """Append an item to the Array
+        :x: the item to append
+        """
+        pos = self._size
+        assert pos % self.itemsize == 0
+        try:
+            self._resize(pos+self.itemsize)
+            self._data[pos//self.itemsize] = x
+        except TypeError:
+            self._resize(pos)
+            raise
+
+    itemsize = property(operator.attrgetter('_itemsize'))
