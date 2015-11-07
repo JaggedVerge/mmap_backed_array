@@ -6,21 +6,21 @@ from pytest import raises
 
 class BaseArrayTests:
     def test_ctor(self):
-        assert len(self.array('c')) == 0
+        assert len(self.array('B')) == 0
         assert len(self.array('i')) == 0
 
         raises(TypeError, self.array, 'hi')
         raises(TypeError, self.array, 1)
         raises(ValueError, self.array, 'q')
-        a = self.array('c')
+        a = self.array('B')
         assert len(a) == 0
-        raises(TypeError, a.append, 7)
+        raises(TypeError, a.append, b'h')
         assert len(a) == 0
         raises(TypeError, a.append, 'hi')
         assert len(a) == 0
-        a.append(b'h')
-        assert a[0] == b'h'
-        assert type(a[0]) is bytes
+        a.append(7)
+        assert a[0] == 7
+        assert type(a[0]) is int
         assert len(a) == 1
 
         a = self.array('u')
@@ -31,13 +31,13 @@ class BaseArrayTests:
         assert type(a[0]) is str
         assert len(a) == 1
 
-        a = self.array('c', (b'a', b'b', b'c'))
-        assert a[0] == b'a'
-        assert a[1] == b'b'
-        assert a[2] == b'c'
+        a = self.array('B', (1, 2, 3))
+        assert a[0] == 1
+        assert a[1] == 2
+        assert a[2] == 3
         assert len(a) == 3
 
-        b = self.array('c', a)
+        b = self.array('B', a)
         assert len(b) == 3
         assert a == b
         raises(TypeError, self.array, 'i', a)
