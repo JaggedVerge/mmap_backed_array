@@ -47,10 +47,6 @@ class BaseArrayTests:
         b = self.array('h', (1, 2, 3))
         assert a == b
 
-        a = self.array('i', (1, 2, 3))
-        b = self.array('h', a)
-        assert list(b) == [1, 2, 3]
-
     def test_ctor_typecodes(self):
         for tc in 'bhilBHILfd':
             assert self.array(tc).typecode == tc
