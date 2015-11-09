@@ -29,7 +29,7 @@ __all__ = [
 
 def anon_mmap(data):
     data = memoryview(data)
-    size = len(data)
+    size = len(data)#TODO: check that this is actually correct, might need to be data.nbytes given this is a memoryview
     name_str = '/{}'.format(os.getpid())
     name = bytes(name_str, 'ascii')
     fd = C.shm_open(name, os.O_RDWR|os.O_CREAT|os.O_EXCL, 0o600)
@@ -182,4 +182,6 @@ class mmaparray:
             self._resize(pos)
             raise
 
+
     itemsize = property(operator.attrgetter('_itemsize'))
+    typecode = property(operator.attrgetter('_typecode'))
