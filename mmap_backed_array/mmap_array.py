@@ -130,6 +130,14 @@ class mmaparray:
 
 
     #Array API
+    def __eq__(self, other):
+        try:
+            return (self is other or
+                    all(x==y for x,y in zip(self, other))
+                    )
+        except TypeError:
+            return NotImplemented
+
     def __len__(self):
         return self._length
 
