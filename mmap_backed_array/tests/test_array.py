@@ -5,7 +5,7 @@ import py
 from pytest import raises
 
 class BaseArrayTests:
-    def test_ctor(self):
+    def test_ctor_basic(self):
         assert len(self.array('B')) == 0
         assert len(self.array('i')) == 0
 
@@ -31,6 +31,7 @@ class BaseArrayTests:
         assert type(a[0]) is str
         assert len(a) == 1
 
+    def test_ctor(self):
         a = self.array('B', (1, 2, 3))
         assert a[0] == 1
         assert a[1] == 2
@@ -46,13 +47,14 @@ class BaseArrayTests:
         b = self.array('h', (1, 2, 3))
         assert a == b
 
-        for tc in 'bhilBHILfd':
-            assert self.array(tc).typecode == tc
-            raises(TypeError, self.array, tc, None)
-
         a = self.array('i', (1, 2, 3))
         b = self.array('h', a)
         assert list(b) == [1, 2, 3]
+
+    def test_ctor_typecodes(self):
+        for tc in 'bhilBHILfd':
+            assert self.array(tc).typecode == tc
+            raises(TypeError, self.array, tc, None)
 
 
 class TestArray(BaseArrayTests):
