@@ -163,21 +163,42 @@ class mmaparray:
         raise NotImplementedError() #TODO: implement slices
 
     def _frombytes(self, data):
-        """Fill the mmap array from a bytes datasouce
+        """Fill the mmap array from a bytes datasource
         :data: the data
         """
-        bytesize = len(data)
+        if isinstance(data, memoryview):
+            bytesize = data.nbytes
+        else:
+            bytesize = len(data)
         if bytesize%self.itemsize != 0:
             raise ValueError
         if bytesize:
             pos = self._size
             assert pos % self.itemsize == 0
             self._resize(pos+bytesize)
-            ffi.cast("char*", self._data)[pos:pos+bytesize] = bytes(data)
+            ffi.cast("char*", self._data)[pos:pos+bytesize] = ffi.from_buffer(data)
 
 
     def _fromstr(self, data):
         raise NotImplementedError()
+
+    def _from_mmaparray(self, data):
+        """Fill the mmap array from another mmap array object
+        :data: mmaparray object
+        """
+        if not isinstance(data, mmaparray):
+            raise TypeError
+        if self.typecode != data.typecode:
+            raise TypeError("Typecodes must be the same, got %s and %s" % (self.typecode, data.typecode))
+        othersize = data._size
+        if othersize%self.itemsize != 0:
+            raise ValueError
+        if othersize:
+            pos = self._size
+            self._resize(pos + othersize)
+            #TODO: Check that this gets the underlying memory from the other mmaparray object correctly
+            ffi.memmove(self._data + pos, data._data, othersize)
+
 
     def append(self, x):
         """Append an item to the Array
