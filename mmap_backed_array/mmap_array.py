@@ -102,6 +102,16 @@ class mmaparray:
                 self._frombytes(data)
             elif isinstance(data, str):
                 self._fromstring(data)
+            elif isinstance(data, array.array):
+                if data.typecode == typecode:
+                    self._frombytes(memoryview(data))
+                else:
+                    raise TypeError("Typecodes must be the same")
+            elif isinstance(data, mmaparray):
+                if data.typecode == typecode:
+                    self._from_mmaparray(data)
+                else:
+                    raise TypeError("Typecodes must be the same")
             else:
                 data = array.array(typecode, data)
                 self._frombytes(memoryview(data))
