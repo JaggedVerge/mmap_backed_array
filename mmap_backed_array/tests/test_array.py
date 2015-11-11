@@ -66,6 +66,16 @@ class BaseArrayTests:
             assert a[2] == 2.5
             assert len(a) == len(values)
 
+    def test_itemsize(self):
+        for t in 'cbB':
+            assert(self.array(t).itemsize >= 1)
+        for t in 'uhHiI':
+            assert(self.array(t).itemsize >= 2)
+        for t in 'lLf':
+            assert(self.array(t).itemsize >= 4)
+        for t in 'd':
+            assert(self.array(t).itemsize >= 8)
+
 
 class TestArray(BaseArrayTests):
     def setup_class(cls):
