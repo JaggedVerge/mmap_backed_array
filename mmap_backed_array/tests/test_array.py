@@ -52,6 +52,20 @@ class BaseArrayTests:
             assert self.array(tc).typecode == tc
             raises(TypeError, self.array, tc, None)
 
+    def test_float(self):
+        values = [0, 1, 2.5, -4.25]
+        for tc in 'fd':
+            a = self.array(tc, values)
+            assert len(a) == len(values)
+            for i, v in enumerate(values):
+                assert a[i] == v
+                assert type(a[i]) is float
+            a[1] = 10.125
+            assert a[0] == 0
+            assert a[1] == 10.125
+            assert a[2] == 2.5
+            assert len(a) == len(values)
+
 
 class TestArray(BaseArrayTests):
     def setup_class(cls):
