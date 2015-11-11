@@ -162,6 +162,18 @@ class mmaparray:
             return self._data[index]
         raise NotImplementedError() #TODO: implement slices
 
+    def __setitem__(self, index, value):
+        if isinstance(index, int):
+            if index < 0:
+                index += self._length
+                if index < 0:
+                    raise IndexError
+            elif not index < self._length:
+                raise IndexError
+            self._data[index] = value
+            return
+        raise NotImplementedError() #TODO: implement slices
+
     def _frombytes(self, data):
         """Fill the mmap array from a bytes datasource
         :data: the data
