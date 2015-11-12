@@ -76,6 +76,10 @@ class BaseArrayTests:
         for t in 'd':
             assert(self.array(t).itemsize >= 8)
 
+    def test_fromlist(self):
+        a = self.array('b')
+        raises(OverflowError, a.fromlist, [1, 2, 400])
+        assert len(a) == 0
 
 class TestArray(BaseArrayTests):
     def setup_class(cls):
