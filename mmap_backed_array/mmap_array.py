@@ -225,6 +225,13 @@ class mmaparray:
             self._resize(pos)
             raise
 
+    def fromlist(self, items):
+        data = array.array(self.typecode)
+        data.fromlist(items)
+        if data:
+            self._frombytes(memoryview(data))
+    _fromlist = fromlist
+
 
     itemsize = property(operator.attrgetter('_itemsize'))
     typecode = property(operator.attrgetter('_typecode'))
