@@ -81,6 +81,22 @@ class BaseArrayTests:
         raises(OverflowError, a.fromlist, [1, 2, 400])
         assert len(a) == 0
 
+        raises(OverflowError, self.array, 'b', [1, 2, 400])
+
+        a = self.array('b', [1, 2])
+        assert len(a) == 2 and a[0] == 1 and a[1] == 2
+
+        a = self.array('b')
+        raises(TypeError, a.fromlist, (1, 2, 400))
+
+        def gen():
+            for i in range(4):
+                yield i + 10
+        a = self.array('i', gen())
+        assert len(a) == 4 and a[2] == 12
+
+        raises(OverflowError, self.array, 'b', (1, 2, 400))
+
 class TestArray(BaseArrayTests):
     def setup_class(cls):
         import mmap_backed_array
