@@ -97,6 +97,12 @@ class BaseArrayTests:
 
         raises(OverflowError, self.array, 'b', (1, 2, 400))
 
+    def test_type(self):
+        for t in 'bBhHiIlLfdcu':
+            assert type(self.array(t)) is self.array
+            assert isinstance(self.array(t), self.array)
+
+
 class TestArray(BaseArrayTests):
     def setup_class(cls):
         import mmap_backed_array
