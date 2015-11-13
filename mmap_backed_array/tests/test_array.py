@@ -76,6 +76,26 @@ class BaseArrayTests:
         for t in 'd':
             assert(self.array(t).itemsize >= 8)
 
+        inttypes = 'bhil'
+        for t in inttypes:
+            a = self.array(t, [1, 2, 3])
+            b = a.itemsize
+            for v in (-2 ** (8 * b) // 2, 2 ** (8 * b) // 2 - 1):
+                print(type(v))
+                a[1] = v
+                assert a[0] == 1 and a[1] == v and a[2] == 3
+            raises(OverflowError, a.append, -2 ** (8 * b) // 2 - 1)
+            raises(OverflowError, a.append, 2 ** (8 * b) // 2)
+
+            a = self.array(t.upper(), [1, 2, 3])
+            b = a.itemsize
+            for v in (0, 2 ** (8 * b) - 1):
+                a[1] = v
+                assert a[0] == 1 and a[1] == v and a[2] == 3
+            raises(OverflowError, a.append, -1)
+            raises(OverflowError, a.append, 2 ** (8 * b))
+
+
     def test_fromlist(self):
         a = self.array('b')
         raises(OverflowError, a.fromlist, [1, 2, 400])
