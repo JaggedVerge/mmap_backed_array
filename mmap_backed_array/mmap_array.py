@@ -188,8 +188,12 @@ class mmaparray:
             pos = self._size
             assert pos % self.itemsize == 0
             self._resize(pos+bytesize)
-            ffi.cast("char*", self._data)[pos:pos+bytesize] = ffi.from_buffer(data)
+            if isinstance(data, bytes):
+                ffi.cast("char*", self._data)[pos:pos+bytesize] = data
+            else:
+                ffi.cast("char*", self._data)[pos:pos+bytesize] = ffi.from_buffer(data)
 
+    frombytes = _frombytes
 
     def _fromstr(self, data):
         raise NotImplementedError()
