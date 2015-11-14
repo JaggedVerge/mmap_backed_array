@@ -235,6 +235,9 @@ class mmaparray:
             self._resize(pos)
             raise
 
+    def extend(self, items):
+        raise NotImplementedError()
+
     def _fromfile(self, f, n):
         """Read in data from a file
         :f: the file
