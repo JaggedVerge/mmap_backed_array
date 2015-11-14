@@ -148,8 +148,13 @@ class mmaparray:
         except TypeError:
             return NotImplemented
 
-    def __len__(self):
-        return self._length
+    def __ge__(self, other):
+        if self is not other:
+            for x, y in zip(self, other):
+                if x == y:
+                    continue
+                return x > y
+        return True
 
     def __getitem__(self, index):
         if isinstance(index, int):
@@ -161,6 +166,31 @@ class mmaparray:
                 raise IndexError
             return self._data[index]
         raise NotImplementedError() #TODO: implement slices
+
+    def __gt__(self, other):
+        for x, y in zip(self, other):
+            if x == y:
+                continue
+            return x > y
+        return False
+
+    def __le__(self, other):
+        if self is not other:
+            for x, y in zip(self, other):
+                if x == y:
+                    continue
+                return x < y
+        return True
+
+    def __len__(self):
+        return self._length
+
+    def __lt__(self, other):
+        for x, y in zip(self, other):
+            if x == y:
+                continue
+            return x < y
+        return False
 
     def __setitem__(self, index, value):
         if isinstance(index, int):
