@@ -235,6 +235,23 @@ class mmaparray:
             self._resize(pos)
             raise
 
+    def _fromfile(self, f, n):
+        """Read in data from a file
+        :f: the file
+        :n: size to read
+        """
+        readsize = n*self.itemsize
+        data = f.read(readsize)
+        datasize = len(data)
+        if datasize < readsize:
+            datasize -= datasize%self.itemsize
+            if datasize:
+                self._frombytes(data[:datasize])
+            raise EOFError #didn't get the whole file, need to try again?
+        self._frombytes(data)
+    fromfile = _fromfile
+
+
     def fromlist(self, items):
         data = array.array(self.typecode)
         data.fromlist(items)
