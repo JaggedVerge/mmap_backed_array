@@ -175,6 +175,53 @@ class BaseArrayTests:
             assert isinstance(self.array(t), self.array)
 
 
+    def test_compare(self):
+        for v1, v2, tt in (([1, 2, 3], [1, 3, 2], 'bhilBHIL'),
+                         (b'abc', b'acb', 'c'),
+                         ('abc', 'acb', 'u')):
+            for t in tt:
+                a = self.array(t, v1)
+                b = self.array(t, v1)
+                c = self.array(t, v2)
+
+                assert (a == 7) is False
+
+                assert (a == a) is True
+                assert (a == b) is True
+                assert (b == a) is True
+                assert (a == c) is False
+                assert (c == a) is False
+
+                assert (a != a) is False
+                assert (a != b) is False
+                assert (b != a) is False
+                assert (a != c) is True
+                assert (c != a) is True
+
+                assert (a < a) is False
+                assert (a < b) is False
+                assert (b < a) is False
+                assert (a < c) is True
+                assert (c < a) is False
+
+                assert (a > a) is False
+                assert (a > b) is False
+                assert (b > a) is False
+                assert (a > c) is False
+                assert (c > a) is True
+
+                assert (a <= a) is True
+                assert (a <= b) is True
+                assert (b <= a) is True
+                assert (a <= c) is True
+                assert (c <= a) is False
+
+                assert (a >= a) is True
+                assert (a >= b) is True
+                assert (b >= a) is True
+                assert (a >= c) is False
+                assert (c >= a) is True
+
 class TestArray(BaseArrayTests):
     def setup_class(cls):
         import mmap_backed_array
