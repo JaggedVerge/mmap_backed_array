@@ -133,6 +133,16 @@ class BaseArrayTests:
 
         raises(OverflowError, self.array, 'b', (1, 2, 400))
 
+    def test_fromstring(self):
+        raises(ValueError, self.array('i').fromstring, 'hi')
+        a = self.array('u')
+        a.fromstring('hi')
+        assert len(a) == 2 and a[0] == 'h' and a[1] == 'i'
+
+        b = self.array('u', 'hi')
+        assert len(b) == 2 and b[0] == 'h' and b[1] == 'i'
+
+
     def test_type(self):
         for t in 'bBhHiIlLfdcu':
             assert type(self.array(t)) is self.array
