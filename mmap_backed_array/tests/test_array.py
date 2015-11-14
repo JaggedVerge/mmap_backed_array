@@ -95,6 +95,22 @@ class BaseArrayTests:
             raises(OverflowError, a.append, -1)
             raises(OverflowError, a.append, 2 ** (8 * b))
 
+    def test_frombytes(self):
+        a = self.array('c')
+        a.frombytes(b'Hi!')
+        assert a[0] == b'H' and a[1] == b'i' and a[2] == b'!' and len(a) == 3
+
+        for t in 'bBhHiIlLfd':
+            a = self.array(t)
+            a.frombytes(b'\x00' * a.itemsize * 2)
+            assert len(a) == 2 and a[0] == 0 and a[1] == 0
+            if a.itemsize > 1:
+                raises(ValueError, a.frombytes, b'\x00' * (a.itemsize - 1))
+                raises(ValueError, a.frombytes, b'\x00' * (a.itemsize + 1))
+                raises(ValueError, a.frombytes, b'\x00' * (2 * a.itemsize - 1))
+                raises(ValueError, a.frombytes, b'\x00' * (2 * a.itemsize + 1))
+            b = self.array(t, b'\x00' * a.itemsize * 2)
+            assert len(b) == 2 and b[0] == 0 and b[1] == 0
 
     def test_fromlist(self):
         a = self.array('b')
