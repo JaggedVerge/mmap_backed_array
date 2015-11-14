@@ -195,8 +195,14 @@ class mmaparray:
 
     frombytes = _frombytes
 
-    def _fromstr(self, data):
-        raise NotImplementedError()
+    def _fromstring(self, data):
+        if not isinstance(data, str):
+            raise TypeError
+        if self.typecode != 'u':
+            raise ValueError
+        bytes_encoded = data.encode('utf-32le') #Do we need to check that ffi.sizeof('wchar_t') == 4 first?
+        self._frombytes(bytes_encoded)
+    fromstring = _fromstring
 
     def _from_mmaparray(self, data):
         """Fill the mmap array from another mmap array object
