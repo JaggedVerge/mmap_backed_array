@@ -112,6 +112,32 @@ class BaseArrayTests:
             b = self.array(t, b'\x00' * a.itemsize * 2)
             assert len(b) == 2 and b[0] == 0 and b[1] == 0
 
+    def test_fromfile(self):
+        def myfile(c, s):
+            f = open(self.tempfile, 'wb')
+            f.write(c * s)
+            f.close()
+            return open(self.tempfile, 'rb')
+
+        f = myfile(b'\x00', 100)
+        for t in 'bBhHiIlLfd':
+            a = self.array(t)
+            a.fromfile(f, 2)
+            assert len(a) == 2 and a[0] == 0 and a[1] == 0
+
+        a = self.array('b')
+        a.fromfile(myfile(b'\x01', 20), 2)
+        assert len(a) == 2 and a[0] == 1 and a[1] == 1
+
+        a = self.array('h')
+        a.fromfile(myfile(b'\x01', 20), 2)
+        assert len(a) == 2 and a[0] == 257 and a[1] == 257
+
+        for i in (0, 1):
+            a = self.array('h')
+            raises(EOFError, a.fromfile, myfile(b'\x01', 2 + i), 2)
+            assert len(a) == 1 and a[0] == 257
+
     def test_fromlist(self):
         a = self.array('b')
         raises(OverflowError, a.fromlist, [1, 2, 400])
