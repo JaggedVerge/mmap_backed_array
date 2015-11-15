@@ -233,6 +233,11 @@ class BaseArrayTests:
             assert isinstance(self.array(t), self.array)
 
 
+    def test_list_methods(self):
+        assert repr(self.array('i')) == "array('i')"
+        assert repr(self.array('i', [1, 2, 3])) == "array('i', [1, 2, 3])"
+        assert repr(self.array('h')) == "array('h')"
+
     def test_compare(self):
         for v1, v2, tt in (([1, 2, 3], [1, 3, 2], 'bhilBHIL'),
                          (b'abc', b'acb', 'c'),
