@@ -293,5 +293,9 @@ class mmaparray:
     _fromlist = fromlist
 
 
+    def tolist(self):
+        return list(self)
+    _tolist = tolist
+
     itemsize = property(operator.attrgetter('_itemsize'))
     typecode = property(operator.attrgetter('_typecode'))
