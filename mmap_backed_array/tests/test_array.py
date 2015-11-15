@@ -52,6 +52,64 @@ class BaseArrayTests:
             assert self.array(tc).typecode == tc
             raises(TypeError, self.array, tc, None)
 
+    def test_value_range(self):
+        import sys
+        values = (-129, 128, -128, 127, 0, 255, -1, 256,
+                  -32768, 32767, -32769, 32768, 65535, 65536,
+                  -2147483647, -2147483648, 2147483647, 4294967295, 4294967296,
+                  )
+        for bb in (8, 16, 32, 64, 128, 256, 512, 1024):
+            for b in (bb - 1, bb, bb + 1):
+                values += (2 ** b, 2 ** b + 1, 2 ** b - 1,
+                           -2 ** b, -2 ** b + 1, -2 ** b - 1)
+
+        for tc, ok, pt in (('b', (  -128,    34,   127),  int),
+                           ('B', (     0,    23,   255),  int),
+                           ('h', (-32768, 30535, 32767),  int),
+                           ('H', (     0, 56783, 65535),  int),
+                           ('i', (-32768, 30535, 32767),  int),
+                           ('I', (     0, 56783, 65535), int),
+                           ('l', (-2 ** 32 // 2, 34, 2 ** 32 // 2 - 1),  int),
+                           ('L', (0, 3523532, 2 ** 32 - 1), int),
+                           ):
+            a = self.array(tc, ok)
+            assert len(a) == len(ok)
+            for v in ok:
+                a.append(v)
+            for i, v in enumerate(ok * 2):
+                assert a[i] == v
+                assert type(a[i]) is pt or (
+                    # A special case: we return ints in Array('I') on 64-bits,
+                    # whereas CPython returns longs.  The difference is
+                    # probably acceptable.
+                    tc == 'I' and
+                    sys.maxint > 2147483647 and type(a[i]) is int)
+            for v in ok:
+                a[1] = v
+                assert a[0] == ok[0]
+                assert a[1] == v
+                assert a[2] == ok[2]
+            assert len(a) == 2 * len(ok)
+            for v in values:
+                try:
+                    a[1] = v
+                    assert a[0] == ok[0]
+                    assert a[1] == v
+                    assert a[2] == ok[2]
+                except OverflowError:
+                    pass
+
+        for tc in 'BHIL':
+            a = self.array(tc)
+            vals = [0, 2 ** a.itemsize - 1]
+            a.fromlist(vals)
+            assert a.tolist() == vals
+
+            a = self.array(tc.lower())
+            vals = [-1 * (2 ** a.itemsize) // 2,  (2 ** a.itemsize) // 2 - 1]
+            a.fromlist(vals)
+            assert a.tolist() == vals
+
     def test_float(self):
         values = [0, 1, 2.5, -4.25]
         for tc in 'fd':
