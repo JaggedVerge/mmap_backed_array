@@ -280,6 +280,15 @@ class BaseArrayTests:
                 assert (a >= c) is False
                 assert (c >= a) is True
 
+
+    def test_to_various_type(self):
+        """Tests for methods that convert to other types"""
+        a = self.array('i', [1, 2, 3])
+        l = a.tolist()
+        assert type(l) is list and len(l) == 3
+        assert a[0] == 1 and a[1] == 2 and a[2] == 3
+
+
 class TestArray(BaseArrayTests):
     def setup_class(cls):
         import mmap_backed_array
