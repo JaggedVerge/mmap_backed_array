@@ -257,6 +257,15 @@ class BaseArrayTests:
         a.remove(1)
         assert repr(a) == "array('i', [2, 1, 2, 1])"
 
+        a.pop()
+        assert repr(a) == "array('i', [2, 1, 2])"
+
+        a.pop(1)
+        assert repr(a) == "array('i', [2, 2])"
+
+        a.pop(-2)
+        assert repr(a) == "array('i', [2])"
+
     def test_compare(self):
         for v1, v2, tt in (([1, 2, 3], [1, 3, 2], 'bhilBHIL'),
                          (b'abc', b'acb', 'c'),
