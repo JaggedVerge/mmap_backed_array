@@ -347,6 +347,20 @@ class BaseArrayTests:
         assert type(l) is list and len(l) == 3
         assert a[0] == 1 and a[1] == 2 and a[2] == 3
 
+        b = self.array('i', a.tobytes())
+        assert len(b) == 3 and b[0] == 1 and b[1] == 2 and b[2] == 3
+
+        #assert self.array('c', ('h', 'i')).tobytes() == b'hi' #TODO: must implement array of type 'c' for this
+
+        a = self.array('i', [0, 0, 0])
+        assert a.tobytes() == b'\x00' * 3 * a.itemsize
+        s = self.array('i', [1, 2, 3]).tobytes()
+        assert b'\x00' in s
+        assert b'\x01' in s
+        assert b'\x02' in s
+        assert b'\x03' in s
+        a = self.array('i', s)
+        assert a[0] == 1 and a[1] == 2 and a[2] == 3
 
 class TestArray(BaseArrayTests):
     def setup_class(cls):
