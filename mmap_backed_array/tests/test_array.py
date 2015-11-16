@@ -378,6 +378,10 @@ class BaseArrayTests:
                 a = unpack(tc * len(values), s)
                 assert a == values
 
+        raises(ValueError, self.array('i').tounicode)
+        assert self.array('u', 'hello').tounicode() == 'hello'
+
+
 class TestArray(BaseArrayTests):
     def setup_class(cls):
         import mmap_backed_array
