@@ -299,6 +299,11 @@ class mmaparray:
             self._frombytes(memoryview(data))
     _fromlist = fromlist
 
+    def index(self, x):
+        for i, y in enumerate(self):
+            if y == x:
+                return i
+        raise ValueError
 
     def tolist(self):
         return list(self)
