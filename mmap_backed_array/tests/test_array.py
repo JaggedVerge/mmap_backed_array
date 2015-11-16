@@ -238,6 +238,13 @@ class BaseArrayTests:
         assert repr(self.array('i', [1, 2, 3])) == "array('i', [1, 2, 3])"
         assert repr(self.array('h')) == "array('h')"
 
+        a = self.array('i', [1, 2, 3, 1, 2, 1])
+        assert a.count(1) == 3
+        assert a.count(2) == 2
+        assert a.index(3) == 2
+        assert a.index(2) == 1
+        raises(ValueError, a.index, 10)
+
     def test_compare(self):
         for v1, v2, tt in (([1, 2, 3], [1, 3, 2], 'bhilBHIL'),
                          (b'abc', b'acb', 'c'),
