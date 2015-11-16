@@ -306,10 +306,45 @@ class mmaparray:
                 return i
         raise ValueError
 
+    def insert(self, i, x):
+        """Insert a new item with value x in the array before position i.
+        Negative values are treated as being relative to the end of the array."""
+        i = operator.index(i)
+        stop = self._length
+        if i < 0:
+            i += stop
+            if i < 0:
+                i = 0
+        elif i > stop:
+            i = stop
+        size = self._size
+        assert size % self.itemsize == 0
+        self._resize(size+self.itemsize)
+        if i < stop:
+            pos = i*self.itemsize
+            self._mmap.move(pos+self.itemsize, pos, size-pos)
+        self._data[i] = x
+
     def pop(self, i=-1):
         """Remove the item with the index i and return it.
         Optional argument defaults to -1 which will remove the last element."""
-        raise NotImplementedError()
+        i = operator.index(i)
+        stop = self._length
+        if i < 0:
+            i += stop
+            if i < 0:
+                raise IndexError
+        elif not i < stop:
+            raise IndexError
+        x = self._data[i]
+        pos = i*self.itemsize
+        size = self._size
+        assert size%self.itemsize == 0
+        next_pos = pos+self.itemsize
+        if next_pos < size:
+            self._mmap.move(pos, next_pos, size-next_pos)
+        self._resize(size-self.itemsize)
+        return x
 
     def remove(self, x):
         """Remove the first occurence of x from the array"""
