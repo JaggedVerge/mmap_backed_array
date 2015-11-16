@@ -306,6 +306,15 @@ class mmaparray:
                 return i
         raise ValueError
 
+    def pop(self, i=-1):
+        """Remove the item with the index i and return it.
+        Optional argument defaults to -1 which will remove the last element."""
+        raise NotImplementedError()
+
+    def remove(self, x):
+        """Remove the first occurence of x from the array"""
+        self.pop(self.index(x))
+
     def reverse(self):
         """Reverse the order of the items in the array."""
         stop = self._length
