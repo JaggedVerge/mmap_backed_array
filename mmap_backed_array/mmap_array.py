@@ -305,6 +305,16 @@ class mmaparray:
                 return i
         raise ValueError
 
+    def reverse(self):
+        """Reverse the order of the items in the array."""
+        stop = self._length
+        end = stop-1
+        for i in range(stop//2):
+            j = end-i
+            tmp = self._data[i]
+            self._data[i] = self._data[j]
+            self._data[j] = tmp
+
     def tolist(self):
         return list(self)
     _tolist = tolist
