@@ -269,6 +269,9 @@ class mmaparray:
             self._resize(pos)
             raise
 
+    def count(self, x):
+        return sum(x==y for y in self)
+
     def extend(self, items):
         raise NotImplementedError()
 
