@@ -239,7 +239,7 @@ class mmaparray:
     fromstring = _fromstring
 
     def _from_mmaparray(self, data):
-        """Fill the mmap array from another mmap array object
+        """Fill the mmap array from another mmap array object by appending it to the end of the current array.
         :data: mmaparray object
         """
         if not isinstance(data, mmaparray):
@@ -253,6 +253,7 @@ class mmaparray:
             pos = self._size
             self._resize(pos + othersize)
             #TODO: Check that this gets the underlying memory from the other mmaparray object correctly
+            #Currently this might invalidate the other mmaparray object.
             ffi.memmove(self._data + pos, data._data, othersize)
 
 
