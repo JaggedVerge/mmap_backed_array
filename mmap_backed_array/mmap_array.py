@@ -300,6 +300,7 @@ class mmaparray:
     _fromlist = fromlist
 
     def index(self, x):
+        """Return the smallest i such that i is the index of the first occurrence of x in the array."""
         for i, y in enumerate(self):
             if y == x:
                 return i
