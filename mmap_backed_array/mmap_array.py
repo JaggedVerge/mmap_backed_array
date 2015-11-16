@@ -192,6 +192,10 @@ class mmaparray:
             return x < y
         return False
 
+    def __repr__(self):
+        data = array.array(self.typecode, self._tobytes())
+        return repr(data)
+
     def __setitem__(self, index, value):
         if isinstance(index, int):
             if index < 0:
@@ -296,6 +300,14 @@ class mmaparray:
     def tolist(self):
         return list(self)
     _tolist = tolist
+
+    def tostring(self):
+        return self.tobytes()#make this an alias for tobytes like cpython >3.2 ?
+    _tostring = tostring
+
+    def tobytes(self):
+        return bytes(ffi.buffer(self._data, self._length * self._itemsize))
+    _tobytes = tobytes
 
     itemsize = property(operator.attrgetter('_itemsize'))
     typecode = property(operator.attrgetter('_typecode'))
