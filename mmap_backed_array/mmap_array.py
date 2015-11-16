@@ -389,5 +389,12 @@ class mmaparray:
         return bytes(ffi.buffer(self._data, self._length * self._itemsize))
     _tobytes = tobytes
 
+    def tounicode(self):
+        """Return a regular python3 (unicode) string"""
+        if self.typecode != 'u':
+            raise ValueError
+        return self.tobytes().decode('utf-32le') #Do we need to check that ffi.sizeof('wchar_t') == 4 first?
+    _tounicode = tounicode
+
     itemsize = property(operator.attrgetter('_itemsize'))
     typecode = property(operator.attrgetter('_typecode'))
