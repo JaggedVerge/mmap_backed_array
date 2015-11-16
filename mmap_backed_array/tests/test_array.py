@@ -201,6 +201,9 @@ class BaseArrayTests:
         raises(OverflowError, a.fromlist, [1, 2, 400])
         assert len(a) == 0
 
+        raises(OverflowError, a.extend, [1, 2, 400])
+        assert len(a) == 2 and a[0] == 1 and a[1] == 2
+
         raises(OverflowError, self.array, 'b', [1, 2, 400])
 
         a = self.array('b', [1, 2])
@@ -209,6 +212,12 @@ class BaseArrayTests:
         a = self.array('b')
         raises(TypeError, a.fromlist, (1, 2, 400))
 
+        raises(OverflowError, a.extend, (1, 2, 400))
+        assert len(a) == 2 and a[0] == 1 and a[1] == 2
+
+        raises(TypeError, a.extend, self.array('i', (7, 8)))
+        assert len(a) == 2 and a[0] == 1 and a[1] == 2
+
         def gen():
             for i in range(4):
                 yield i + 10
@@ -216,6 +225,12 @@ class BaseArrayTests:
         assert len(a) == 4 and a[2] == 12
 
         raises(OverflowError, self.array, 'b', (1, 2, 400))
+
+        a = self.array('b', (1, 2))
+        assert len(a) == 2 and a[0] == 1 and a[1] == 2
+
+        a.extend(a)
+        assert repr(a) == "array('b', [1, 2, 1, 2])"
 
     def test_fromstring(self):
         raises(ValueError, self.array('i').fromstring, 'hi')
