@@ -382,10 +382,13 @@ class mmaparray:
     _tolist = tolist
 
     def tostring(self):
+        """Returns a bytes object representing the array.
+        Note that this is an alias of tobytes method"""
         return self.tobytes()#make this an alias for tobytes like cpython >3.2 ?
     _tostring = tostring
 
     def tobytes(self):
+        """Returns a bytes object representing the array."""
         return bytes(ffi.buffer(self._data, self._length * self._itemsize))
     _tobytes = tobytes
 
