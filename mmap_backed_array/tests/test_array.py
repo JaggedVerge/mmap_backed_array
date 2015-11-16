@@ -362,6 +362,22 @@ class BaseArrayTests:
         a = self.array('i', s)
         assert a[0] == 1 and a[1] == 2 and a[2] == 3
 
+        from struct import unpack
+        values = (-129, 128, -128, 127, 0, 255, -1, 256, -32760, 32760)
+        s = self.array('i', values).tobytes()
+        fmt = 'i' * len(values)
+        a = unpack(fmt, s)
+        assert a == values
+
+        for tcodes, values in (('bhilfd', (-128, 127, 0, 1, 7, -10)),
+                               ('BHILfd', (127, 0, 1, 7, 255, 169)),
+                               ('hilHILfd', (32760, 30123, 3422, 23244))):
+            for tc in tcodes:
+                values += ((2 ** self.array(tc).itemsize) // 2 - 1, )
+                s = self.array(tc, values).tobytes()
+                a = unpack(tc * len(values), s)
+                assert a == values
+
 class TestArray(BaseArrayTests):
     def setup_class(cls):
         import mmap_backed_array
