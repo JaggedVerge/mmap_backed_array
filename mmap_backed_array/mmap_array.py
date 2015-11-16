@@ -273,7 +273,22 @@ class mmaparray:
         return sum(x==y for y in self)
 
     def extend(self, items):
-        raise NotImplementedError()
+        """Append items to the end of the array"""
+        if isinstance(items, array.array):
+            if items.typecode!=self.typecode:
+                raise TypeError('can only extend with array of same kind')
+            self._frombytes(memoryview(items))
+        elif isinstance(items, mmaparray):
+            if items.typecode!=self.typecode:
+                raise TypeError('can only extend with array of same kind')
+            self._from_mmaparray(items)
+        else:
+            data = array.array(self.typecode)
+            try:
+                data.extend(items)
+            finally:
+                if data:
+                    self._frombytes(memoryview(data))
 
     def _fromfile(self, f, n):
         """Read in data from a file
