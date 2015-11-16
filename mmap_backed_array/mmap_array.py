@@ -270,6 +270,7 @@ class mmaparray:
             raise
 
     def count(self, x):
+        """Return the number of occurrences of the given item in the array."""
         return sum(x==y for y in self)
 
     def extend(self, items):
