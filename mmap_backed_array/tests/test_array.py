@@ -280,6 +280,22 @@ class BaseArrayTests:
                     for i in range(len(l2)):
                         assert l2[i] == a2[i]
 
+        a = self.array('i', [1, 2, 3, 4])
+        a[1:3] = self.array('i', [5, 6])
+        assert len(a) == 4
+        assert a[0] == 1 and a[1] == 5 and a[2] == 6 and a[3] == 4
+        a[0:-1:2] = self.array('i', [7, 8])
+        assert a[0] == 7 and a[1] == 5 and a[2] == 8 and a[3] == 4
+
+        raises(ValueError, "a[1:2:4] = self.array('i', [5, 6, 7])")
+        raises(TypeError, "a[1:3] = self.array('I', [5, 6])")
+        raises(TypeError, "a[1:3] = [5, 6]")
+
+        a = self.array('i', [1, 2, 3])
+        assert a.__getslice__(1, 2) == a[1:2]
+        a.__setslice__(1, 2, self.array('i', (7,)))
+        assert a[0] == 1 and a[1] == 7 and a[2] == 3
+
     def test_list_methods(self):
         assert repr(self.array('i')) == "array('i')"
         assert repr(self.array('i', [1, 2, 3])) == "array('i', [1, 2, 3])"
