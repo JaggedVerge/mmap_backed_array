@@ -165,7 +165,19 @@ class mmaparray:
             elif index >= self._length:
                 raise IndexError
             return self._data[index]
-        raise NotImplementedError() #TODO: implement slices
+        start, stop, step = index.indices(self._length)
+        if step == 0:
+            return self._data[start]
+        elif step == 1:
+            return array.array(
+                self.typecode,
+                self._data[start:stop],
+                )
+        else:
+            return array.array(
+                self.typecode,
+                (self._data[i] for i in range(start, stop, step)),
+                )
 
     def __gt__(self, other):
         for x, y in zip(self, other):
