@@ -317,6 +317,10 @@ class mmaparray:
                 (self._data[i] for i in range(start, stop, step)),
                 )
 
+    def __getslice__(self, i, j):
+        start, stop, length = _decode_old_slice(i, j, self._length)
+        return array.array(self.typecode, self._data[start:stop])
+
     def __gt__(self, other):
         for x, y in zip(self, other):
             if x == y:
