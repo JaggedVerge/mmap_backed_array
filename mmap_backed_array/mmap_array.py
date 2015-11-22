@@ -360,7 +360,91 @@ class mmaparray:
                 raise IndexError
             self._data[index] = value
             return
-        raise NotImplementedError() #TODO: implement slices
+        #start, stop, step = index.indices(self._length)
+        #length_of_slice, modulus = divmod(stop-start, step)
+        #assert modulus == 0
+        #print("start, stop, step, length_of_slice", start, stop, step, length_of_slice)
+        distart, distop, distep, dilength = _decode_index(index, self._length)
+        print("distart, distop, distep, dilength ",distart, distop, distep, dilength)
+        start, stop, step, length_of_slice = _decode_index(index, self._length)
+        assert length_of_slice >= 0
+
+        if step == 0:
+            self._data[start] = value
+            return
+
+        if not isinstance(value, (array.array, mmaparray)):
+            raise TypeError(
+                    'Can only assign array (not "{}" to array slice'.format(type(value).__name__)
+                )
+        if value.typecode != self.typecode:
+            raise TypeError(
+                'Can only assign array of same type to array slice'
+                )
+        if step == 1:
+            size = self._size
+            new_length = len(value)
+            move_size = (new_length-length_of_slice)*self.itemsize
+            pos = stop*self.itemsize
+            if new_length > length_of_slice:
+                #need to expand the mmap then move value into it
+                self._resize(size + move_size)
+                self._mmap.move(pos+movesize, pos, size-pos)
+            elif new_length < length_of_slice:
+                #need to move first then shrink the mmap
+                self.mmap.move(pos+movesize, pos, size-pos)
+                self._resize(size+movesize)
+            #Now we copy the values over
+            startpos = start*self.itemsize
+            stoppos = (start+new_length)*self.itemsize
+            #ffi.memmove(self._data + startpos, value._data, new_length*self.itemsize)
+            if isinstance(value, mmaparray):
+                ffi.cast("char*", self._data)[startpos:stoppos] = value.tobytes()
+            else:
+                raise NotImplementedError("TODO: handle array.array memoryview")
+        else: #extended slice, must be of same length
+            if len(value)!=length_of_slice:
+                raise ValueError('attempt to assign object of length %r '
+                                 'to extended slice of length %r'
+                                 % (len(value), length_of_slice))
+            for i,v in zip(range(start, stop, step), value):
+                self._data[i] = v
+
+    def __setslice__(self, i, j, value):
+        # validate value
+        if not isinstance(value, (array.array, mmaparray)):
+            raise TypeError(
+                'can only assign array (not "%s") to array slice'
+                % type(value).__name__
+                )
+        if value.typecode!=self.typecode:
+            raise TypeError(
+                'can only assign array of same kind to array slice'
+                )
+
+        start, stop, length = _decode_old_slice(i, j, self._length)
+
+        # resize if necessary
+        size = self._size
+        newlength = len(value)
+        movesize = (newlength-length)*self.itemsize
+        pos = stop*self.itemsize
+        if newlength > length:
+            # need to expand first, then move
+            self._resize(size+movesize)
+            self._mmap.move(pos+movesize, pos, size-pos)
+        elif newlength < length:
+            # need to move first, then shrink
+            self._mmap.move(pos+movesize, pos, size-pos)
+            self._resize(size+movesize)
+
+        # then copy values over as a single block
+        startpos = start*self.itemsize
+        stoppos = (start+newlength)*self.itemsize
+        if isinstance(value, mmaparray):
+            ffi.cast("char*", self._data)[startpos:stoppos] = value.tobytes()
+        else:
+            raise NotImplementedError("TODO: handle array.array memoryview")
 
     def _frombytes(self, data):
         """Fill the mmap array from a bytes datasource
