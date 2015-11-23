@@ -387,6 +387,12 @@ class BaseArrayTests:
                 assert (a >= c) is False
                 assert (c >= a) is True
 
+    def test_copy_swap(self):
+        a = self.array('i', [1, 2, 3])
+        from copy import copy
+        b = copy(a)
+        a[1] = 7
+        assert repr(b) == "array('i', [1, 2, 3])"
 
     def test_to_various_type(self):
         """Tests for methods that convert to other types"""
