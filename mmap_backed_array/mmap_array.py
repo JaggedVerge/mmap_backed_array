@@ -278,6 +278,9 @@ class mmaparray:
 
 
     #Array API
+    def __copy__(self):
+        return mmaparray(self.typecode, self)
+
     def __eq__(self, other):
         try:
             return (self is other or
