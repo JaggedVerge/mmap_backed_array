@@ -376,26 +376,7 @@ class mmaparray:
                 'Can only assign array of same type to array slice'
                 )
         if step == 1:
-            size = self._size
-            new_length = len(value)
-            movesize = (new_length-length_of_slice)*self.itemsize
-            pos = stop*self.itemsize
-            if new_length > length_of_slice:
-                #need to expand the mmap then move value into it
-                self._resize(size + movesize)
-                self._mmap.move(pos+movesize, pos, size-pos)
-            elif new_length < length_of_slice:
-                #need to move first then shrink the mmap
-                self.mmap.move(pos+movesize, pos, size-pos)
-                self._resize(size+movesize)
-            #Now we copy the values over
-            startpos = start*self.itemsize
-            stoppos = (start+new_length)*self.itemsize
-            #ffi.memmove(self._data + startpos, value._data, new_length*self.itemsize)
-            if isinstance(value, mmaparray):
-                ffi.cast("char*", self._data)[startpos:stoppos] = value.tobytes()
-            else:
-                raise NotImplementedError("TODO: handle array.array memoryview")
+            self._set_simple_slice(start, stop, length_of_slice, value)
         else: #extended slice, must be of same length
             if len(value)!=length_of_slice:
                 raise ValueError('attempt to assign object of length %r '
@@ -417,7 +398,9 @@ class mmaparray:
                 )
 
         start, stop, length = _decode_old_slice(i, j, self._length)
+        self._set_simple_slice(start, stop, length, value)
 
+    def _set_simple_slice(self, start, stop, length, value):
         # resize if necessary
         size = self._size
         newlength = len(value)
@@ -439,6 +422,7 @@ class mmaparray:
             ffi.cast("char*", self._data)[startpos:stoppos] = value.tobytes()
         else:
             raise NotImplementedError("TODO: handle array.array memoryview")
+
 
     def _frombytes(self, data):
         """Fill the mmap array from a bytes datasource
