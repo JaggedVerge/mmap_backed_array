@@ -166,6 +166,7 @@ def _decode_index(index_or_slice, size):
 
 
 def anon_mmap(data):
+    """Create an anonymous mmap that can be resized"""
     data = memoryview(data)
     size = len(data)#TODO: check that this is actually correct, might need to be data.nbytes given this is a memoryview
     name_str = '/{}'.format(os.getpid())
@@ -205,7 +206,7 @@ class mmaparray:
             raise ValueError
         self._itemtype = itemtype
         self._typecode = typecode
-        self._ptrtype = ffi.typeof( ffi.getctype(itemtype, '*') )
+        self._ptrtype = ffi.typeof(ffi.getctype(itemtype, '*'))
         self._itemsize = ffi.sizeof(itemtype)
 
         # validate *args
@@ -260,7 +261,7 @@ class mmaparray:
         """Set the size of the mmap object"""
         self._size = size
         self._length = size//self._itemsize
-        pointer_to_beginning_of_mmap_buffer = address_of_buffer(self._mmap)#TODO: can't use address of buffer from _multiprocessing
+        pointer_to_beginning_of_mmap_buffer = address_of_buffer(self._mmap)
         self._data = ffi.cast(self._ptrtype, pointer_to_beginning_of_mmap_buffer)
 
     def _resize(self, size):
@@ -284,7 +285,7 @@ class mmaparray:
     def __eq__(self, other):
         try:
             return (self is other or
-                    all(x==y for x,y in zip(self, other))
+                    all(x == y for x, y in zip(self, other))
                     )
         except TypeError:
             return NotImplemented
@@ -381,7 +382,7 @@ class mmaparray:
         if step == 1:
             self._set_simple_slice(start, stop, length_of_slice, value)
         else: #extended slice, must be of same length
-            if len(value)!=length_of_slice:
+            if len(value) != length_of_slice:
                 raise ValueError('attempt to assign object of length %r '
                                  'to extended slice of length %r'
                                  % (len(value), length_of_slice))
@@ -395,7 +396,7 @@ class mmaparray:
                 'can only assign array (not "%s") to array slice'
                 % type(value).__name__
                 )
-        if value.typecode!=self.typecode:
+        if value.typecode != self.typecode:
             raise TypeError(
                 'can only assign array of same kind to array slice'
                 )
@@ -496,11 +497,11 @@ class mmaparray:
     def extend(self, items):
         """Append items to the end of the array"""
         if isinstance(items, array.array):
-            if items.typecode!=self.typecode:
+            if items.typecode != self.typecode:
                 raise TypeError('can only extend with array of same kind')
             self._frombytes(memoryview(items))
         elif isinstance(items, mmaparray):
-            if items.typecode!=self.typecode:
+            if items.typecode != self.typecode:
                 raise TypeError('can only extend with array of same kind')
             self._from_mmaparray(items)
         else:
