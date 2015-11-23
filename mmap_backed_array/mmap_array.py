@@ -360,12 +360,6 @@ class mmaparray:
                 raise IndexError
             self._data[index] = value
             return
-        #start, stop, step = index.indices(self._length)
-        #length_of_slice, modulus = divmod(stop-start, step)
-        #assert modulus == 0
-        #print("start, stop, step, length_of_slice", start, stop, step, length_of_slice)
-        distart, distop, distep, dilength = _decode_index(index, self._length)
-        print("distart, distop, distep, dilength ",distart, distop, distep, dilength)
         start, stop, step, length_of_slice = _decode_index(index, self._length)
         assert length_of_slice >= 0
 
@@ -384,11 +378,11 @@ class mmaparray:
         if step == 1:
             size = self._size
             new_length = len(value)
-            move_size = (new_length-length_of_slice)*self.itemsize
+            movesize = (new_length-length_of_slice)*self.itemsize
             pos = stop*self.itemsize
             if new_length > length_of_slice:
                 #need to expand the mmap then move value into it
-                self._resize(size + move_size)
+                self._resize(size + movesize)
                 self._mmap.move(pos+movesize, pos, size-pos)
             elif new_length < length_of_slice:
                 #need to move first then shrink the mmap
