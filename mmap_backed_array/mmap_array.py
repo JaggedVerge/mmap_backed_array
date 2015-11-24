@@ -490,6 +490,13 @@ class mmaparray:
             self._resize(pos)
             raise
 
+    def byteswap(self):
+        if self.itemsize == 1:
+            return
+        if self.itemsize not in (2,4,8):
+            raise RuntimeError
+        for pos in range(0, self._size, self.itemsize):
+            self._mmap[pos:pos+self.itemsize] = self._mmap[pos:pos+self.itemsize][::-1]
     def count(self, x):
         """Return the number of occurrences of the given item in the array."""
         return sum(x==y for y in self)
