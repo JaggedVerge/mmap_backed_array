@@ -408,6 +408,85 @@ class BaseArrayTests:
             assert a[1] == 2
             assert a[2] == 3
 
+    def test_addmul(self):
+        a = self.array('i', [1, 2, 3])
+        assert repr(a + a) == "array('i', [1, 2, 3, 1, 2, 3])"
+        assert 2 * a == a + a
+        assert a * 2 == a + a
+        b = self.array('i', [4, 5, 6, 7])
+        assert repr(a + b) == "array('i', [1, 2, 3, 4, 5, 6, 7])"
+        assert repr(2 * self.array('i')) == "array('i')"
+        assert repr(self.array('i') + self.array('i')) == "array('i')"
+
+        a = self.array('i', [1, 2])
+        assert type(a + a) is self.array
+        assert type(a * 2) is self.array
+        assert type(2 * a) is self.array
+        b = a
+        a += a
+        assert repr(b) == "array('i', [1, 2, 1, 2])"
+        b *= 3
+        assert repr(a) == "array('i', [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2])"
+        assert a == b
+        a += self.array('i', (7,))
+        assert repr(a) == "array('i', [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 7])"
+
+        raises(MemoryError, "a * self.maxint")
+        raises(MemoryError, "a *= self.maxint")
+
+        raises(TypeError, "a = self.array('i') + 2")
+        raises(TypeError, "self.array('i') + self.array('b')")
+        a = self.array('i')
+        raises(TypeError, "a += 7")
+
+        # Calling __add__ directly raises TypeError in cpython but
+        # returns NotImplemented in pypy if placed within a
+        # try: except TypeError: construction.
+        #
+        #raises(TypeError, self.array('i').__add__, (2,))
+        #raises(TypeError, self.array('i').__iadd__, (2,))
+        #raises(TypeError, self.array('i').__add__, self.array('b'))
+
+        class addable(object):
+            def __add__(self, other):
+                return b"add"
+
+            def __radd__(self, other):
+                return b"radd"
+
+        assert addable() + self.array('i') == b'add'
+        assert self.array('i') + addable() == b'radd'
+
+        a = self.array('i')
+        a += addable()
+        assert a == b'radd'
+
+        a = self.array('i', [1, 2])
+        assert a * -1 == self.array('i')
+        b = a
+        a *= -1
+        assert a == self.array('i')
+        assert b == self.array('i')
+
+        a = self.array('i')
+        raises(TypeError, "a * 'hi'")
+        raises(TypeError, "'hi' * a")
+        raises(TypeError, "a *= 'hi'")
+
+        class mulable(object):
+            def __mul__(self, other):
+                return b"mul"
+
+            def __rmul__(self, other):
+                return b"rmul"
+
+        assert mulable() * self.array('i') == b'mul'
+        assert self.array('i') * mulable() == b'rmul'
+
+        a = self.array('i')
+        a *= mulable()
+        assert a == b'rmul'
+
     def test_to_various_type(self):
         """Tests for methods that convert to other types"""
         a = self.array('i', [1, 2, 3])
