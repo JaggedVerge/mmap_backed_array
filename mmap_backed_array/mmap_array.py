@@ -1,6 +1,8 @@
 """mmap backed array datastructure"""
-import mmap as _mmap
+import mmap
 import array, os, operator
+
+_mmap = mmap
 
 from cffi import FFI
 ffi = FFI()
@@ -279,6 +281,14 @@ class mmaparray:
 
 
     #Array API
+    def __add__(self, other):
+        result = mmaparray(self.typecode, self)
+        try:
+            result.extend(other)
+        except TypeError:
+            return NotImplemented
+        return result
+
     def __copy__(self):
         return mmaparray(self.typecode, self)
 
