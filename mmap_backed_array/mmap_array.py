@@ -342,6 +342,25 @@ class mmaparray:
             return x > y
         return False
 
+    def __imul__(self, other):
+        if not isinstance(other, int):
+            return NotImplemented
+        if other <= 0:
+            self._resize(0)
+        elif other > 1:
+            size = self._size
+            self._resize(other*size)
+            newsize = self._size
+            while size < newsize:
+                rest = newsize-size
+                if rest < size:
+                    self._mmap.move(size, 0, rest)
+                    break
+                else:
+                    self._mmap.move(size, 0, size)
+                    size += size
+        return self
+
     def __le__(self, other):
         if self is not other:
             for x, y in zip(self, other):
@@ -360,9 +379,21 @@ class mmaparray:
             return x < y
         return False
 
+    def __mul__(self, other):
+        if not isinstance(other, int):
+            return NotImplemented
+        print("__mul__ called")
+        if other > 0:
+            result = mmaparray(self.typecode, self)
+            result *= other
+        else:
+            result = mmaparray(self.typecode)
+        return result
     def __repr__(self):
         data = array.array(self.typecode, self._tobytes())
         return repr(data)
+
+    __rmul__ = __mul__
 
     def __setitem__(self, index, value):
         if isinstance(index, int):
