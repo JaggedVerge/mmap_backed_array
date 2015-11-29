@@ -342,6 +342,14 @@ class mmaparray:
             return x > y
         return False
 
+
+    def __iadd__(self, other):
+        try:
+            self.extend(other)
+        except TypeError:
+            return NotImplemented
+        return self
+
     def __imul__(self, other):
         if not isinstance(other, int):
             return NotImplemented
