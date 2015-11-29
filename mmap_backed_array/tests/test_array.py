@@ -431,8 +431,8 @@ class BaseArrayTests:
         a += self.array('i', (7,))
         assert repr(a) == "array('i', [1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 7])"
 
-        raises(MemoryError, "a * self.maxint")
-        raises(MemoryError, "a *= self.maxint")
+        raises(OverflowError, "a * self.maxint")
+        raises(OverflowError, "a *= self.maxint")
 
         raises(TypeError, "a = self.array('i') + 2")
         raises(TypeError, "self.array('i') + self.array('b')")
