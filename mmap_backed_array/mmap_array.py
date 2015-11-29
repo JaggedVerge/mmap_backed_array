@@ -481,10 +481,13 @@ class mmaparray:
             raise ValueError
         if othersize:
             pos = self._size
+            bytes_from_data = data.tobytes()#Note this must be called before resizing.
+                                            #otherwise bytes will be the wrong length in cases such as
+                                            #a._from_mmaparray(a) or  a.extend(a) if a is the mmaparray type
+            #TODO: Can this be done better?
             self._resize(pos + othersize)
             #TODO: Check that this gets the underlying memory from the other mmaparray object correctly
-            #Currently this might invalidate the other mmaparray object.
-            ffi.memmove(self._data + pos, data._data, othersize)
+            ffi.cast("char*", self._data)[pos:pos+othersize] = bytes_from_data
 
 
     def append(self, x):
