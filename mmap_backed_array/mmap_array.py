@@ -191,7 +191,12 @@ def anon_mmap(data):
 import ctypes
 def address_of_buffer(buf):
     """Find the address of a buffer"""
-    return ctypes.addressof(ctypes.c_char.from_buffer(buf))
+    obj = ctypes.py_object(buf)
+    address = ctypes.c_void_p()
+    length = ctypes.c_ssize_t()
+    ctypes.pythonapi.PyObject_AsReadBuffer(obj, ctypes.byref(address), ctypes.byref(length))
+    return address.value
+
 
 class mmaparray:
     """mmap backed Array like data structure"""
