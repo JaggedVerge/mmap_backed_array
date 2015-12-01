@@ -26,7 +26,7 @@ _typecode_to_type = {
 }
 
 __all__ = [
-    "mmaparray",
+    "ffi", "mmaparray",
 ]
 
 def _decode_old_slice(i, j, size):
