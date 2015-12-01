@@ -547,6 +547,10 @@ class mmaparray:
             self._resize(pos)
             raise
 
+    def buffer_info(self):
+        """Tuple of address, length of the array"""
+        return address_of_buffer(self._mmap), self._size
+
     def byteswap(self):
         """Swap the byte order of the array."""
         if self.itemsize == 1:
