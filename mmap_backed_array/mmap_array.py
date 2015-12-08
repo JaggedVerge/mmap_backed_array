@@ -26,7 +26,7 @@ _typecode_to_type = {
 }
 
 __all__ = [
-    "ffi", "mmaparray",
+    "anon_mmap", "C", "ffi", "mmaparray",
 ]
 
 def _decode_old_slice(i, j, size):
@@ -176,11 +176,11 @@ def anon_mmap(data):
     fd = C.shm_open(name, os.O_RDWR|os.O_CREAT|os.O_EXCL, 0o600)
     if fd < 0:
         errno = ffi.errno
-        raise OSError(errno, os.seterror(errno))
+        raise OSError(errno, os.strerror(errno))
     try:
         if C.shm_unlink(name) != 0:
             errno = ffi.errno
-            raise OSError(errno, os.seterror(errno))
+            raise OSError(errno, os.strerror(errno))
         os.write(fd, data)
         result = _mmap.mmap(fd, size)
     finally:
