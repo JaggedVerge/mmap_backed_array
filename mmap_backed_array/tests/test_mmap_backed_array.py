@@ -50,6 +50,19 @@ class Test_anon_mmap:
         monkeypatch.setattr(C, 'shm_open', shm_open)
         pytest.raises(OSError, anon_mmap, b'\x00')
 
+    def test_mmap(self, monkeypatch):
+        import mmap_backed_array
+        marker = object()
+        data = b'Sample data!'
+        def mmap(fd, size, *args, **kwargs):
+            assert fd>=0
+            assert size == len(data)
+            assert not args
+            assert not kwargs
+            return marker
+        monkeypatch.setattr(mmap_backed_array._mmap, 'mmap', mmap)
+        assert mmap_backed_array.anon_mmap(data) is marker
+
     def test_shm_unlink(self, monkeypatch):
         from mmap_backed_array import C, anon_mmap
         _unlink = C.shm_unlink
