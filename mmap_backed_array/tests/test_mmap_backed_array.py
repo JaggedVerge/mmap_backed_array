@@ -49,3 +49,13 @@ class Test_anon_mmap:
             return -1
         monkeypatch.setattr(C, 'shm_open', shm_open)
         pytest.raises(OSError, anon_mmap, b'\x00')
+
+    def test_shm_unlink(self, monkeypatch):
+        from mmap_backed_array import C, anon_mmap
+        _unlink = C.shm_unlink
+        def shm_unlink(name):
+            assert _unlink(name) >= 0
+            return -1
+        monkeypatch.setattr(C, 'shm_unlink', shm_unlink)
+        pytest.raises(OSError, anon_mmap, b'\x00')
+
