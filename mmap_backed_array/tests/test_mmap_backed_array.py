@@ -55,7 +55,7 @@ class Test_anon_mmap:
         marker = object()
         data = b'Sample data!'
         def mmap(fd, size, *args, **kwargs):
-            assert fd>=0
+            assert fd >= 0
             assert size == len(data)
             assert not args
             assert not kwargs
@@ -72,3 +72,20 @@ class Test_anon_mmap:
         monkeypatch.setattr(C, 'shm_unlink', shm_unlink)
         pytest.raises(OSError, anon_mmap, b'\x00')
 
+
+class Test_mmaparray:
+
+    def setup_class(cls):
+        from mmap_backed_array import mmaparray, _mmap
+        cls.mmaparray = mmaparray
+        cls._mmap = _mmap
+        cls.tempfile = str(pytest.ensuretemp('mmaparray').join('tmpfile'))
+
+    def test_too_many_args(self):
+        pytest.raises(TypeError, self.mmaparray, 'b', (), ())
+
+    def test_unknown_kwargs(self):
+        pytest.raises(TypeError, self.mmaparray, 'b', (), foo=1)
+
+    def test_mmap_typeerror(self):
+        pytest.raises(TypeError, self.mmaparray, 'b', mmap=object())
