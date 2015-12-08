@@ -6,4 +6,13 @@ sudo: false
 python:
    - 3.4
 
-script: py.test
+before_install:
+   - pip install pytest-cov
+   - pip install coveralls
+
+script:
+   - py.test
+   - coverage run py.test
+
+after_success:
+   - coveralls
