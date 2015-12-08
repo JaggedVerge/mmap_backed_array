@@ -32,3 +32,20 @@ class TestMmap:
 
             assert arr[0] == 1
         mmap_backing.close()
+
+class Test_anon_mmap:
+    """Test anonymous mmap helper"""
+
+    def test_shm_open(self, monkeypatch):
+        from mmap_backed_array import C, anon_mmap
+        def shm_open(name, oflag, mode):
+            assert isinstance(name, bytes)
+            fwd_slash = ord(b'/')
+            assert name[0] == fwd_slash
+            assert fwd_slash not in name[1:]
+            assert len(name) <= 255
+            assert oflag == os.O_RDWR|os.O_CREAT|os.O_EXCL
+            assert mode == 0o600
+            return -1
+        monkeypatch.setattr(C, 'shm_open', shm_open)
+        pytest.raises(OSError, anon_mmap, b'\x00')
