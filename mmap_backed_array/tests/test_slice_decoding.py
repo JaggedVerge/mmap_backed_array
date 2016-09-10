@@ -5,6 +5,7 @@ import pytest
 
 from mmap_backed_array.slice_decoding import (
     _decode_index,
+    _decode_old_slice,
     _decode_slice,
 )
 
@@ -86,3 +87,21 @@ def test_decode_slice():
     assert indices_info[2] == slice_step
     #length
     assert indices_info[3] == 1
+
+def test_decode_old_slice():
+    """Test that decoding a slice that contains no step information (as in step=1)
+    produces the appropriate indexes into a collection"""
+    test_collection = ['a', 'b', 'c', 'd']
+
+    start, stop, length = _decode_old_slice(1, 2, len(test_collection))
+    assert start == 1
+    assert test_collection[start] == 'b'
+    assert stop == 2
+    assert test_collection[stop] == 'c'
+    assert length == 1
+
+
+    start, stop, length = _decode_old_slice(2, 1000, len(test_collection))
+    assert start == 2
+    assert stop == len(test_collection)
+    assert length == 2
