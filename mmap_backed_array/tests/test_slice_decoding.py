@@ -25,3 +25,15 @@ def test_decode_slice_bad_parameter():
     s = slice(1,2,"step edge case")
     with pytest.raises(TypeError):
         _decode_slice(s, 10)
+
+    s = slice(1,2,0)
+    with pytest.raises(ValueError):
+        _decode_slice(s, 10)
+
+    s = slice("Bad start type",2,1)
+    with pytest.raises(TypeError):
+        _decode_slice(s, 10)
+
+    s = slice(1,"Bad stop type",1)
+    with pytest.raises(TypeError):
+        _decode_slice(s, 10)
