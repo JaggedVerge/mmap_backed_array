@@ -65,3 +65,22 @@ def test_decode_index_integer():
         indices_info = _decode_index(idx, len(a))
         assert a[idx] == a[indices_info[0]]
 
+def test_decode_slice():
+    """Test that _decode_slice generates the correct indexes
+    into a collection for given slices"""
+
+    slice_step = 1
+    test_collection = ['a', 'b', 'c', 'd']
+    #We define a slice that will generate a length1 list if applied to the test collection
+    s = slice(1,2,slice_step)
+    indices_info = _decode_slice(s, len(test_collection))
+    #start
+    assert indices_info[0] == 1
+    assert test_collection[indices_info[0]] == test_collection[1]
+    #end
+    assert indices_info[1] == 2
+    assert test_collection[indices_info[1]] == test_collection[2]
+    #step
+    assert indices_info[2] == slice_step
+    #length
+    assert indices_info[3] == 1
