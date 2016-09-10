@@ -47,6 +47,8 @@ def test_decode_index_bad_parameter():
     with pytest.raises(TypeError):
         _decode_index(s, "This is not a real size")
 
+    with pytest.raises(TypeError):
+        _decode_index(1, "This is not a real size")
 
     #Invalid index values
     with pytest.raises(IndexError):
