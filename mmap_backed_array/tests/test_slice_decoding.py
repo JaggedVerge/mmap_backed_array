@@ -3,7 +3,7 @@ Tests for slice decoding
 """
 import pytest
 
-from slice_decoding import _decode_slice
+from mmap_backed_array.slice_decoding import _decode_slice
 
 def test_decode_slice_bad_parameter():
     """Test that bad parameters to decode_slice raise"""
