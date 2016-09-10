@@ -111,3 +111,10 @@ def test_decode_old_slice():
     assert start == 2
     assert stop == len(shorter_test_collection)
     assert length == 1
+
+    # Slice index before beginning of array produces empty indexes into the collection
+    # essentially this would be an empty list if the slice was applied to the collection.
+    start, stop, length = _decode_old_slice(-1, 0, len(shorter_test_collection))
+    assert start == 0
+    assert stop == 0
+    assert length == 0
