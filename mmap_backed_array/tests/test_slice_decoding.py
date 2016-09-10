@@ -37,3 +37,9 @@ def test_decode_slice_bad_parameter():
     s = slice(1,"Bad stop type",1)
     with pytest.raises(TypeError):
         _decode_slice(s, 10)
+
+def test_decode_index_bad_parameter():
+    """Test that bad parameters passed to decode_index raise"""
+    s = slice(1,2,3)
+    with pytest.raises(TypeError):
+        _decode_slice(s, "This is not a real size")
