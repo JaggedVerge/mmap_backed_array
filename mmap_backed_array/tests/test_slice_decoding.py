@@ -20,3 +20,8 @@ def test_decode_slice_bad_parameter():
     #size can't be negative
     with pytest.raises(ValueError):
         _decode_slice(s, -1)
+
+    #Step must be an integer, this is a pretty crazy edge case really
+    s = slice(1,2,"step edge case")
+    with pytest.raises(TypeError):
+        _decode_slice(s, 10)
