@@ -54,3 +54,14 @@ def test_decode_index_bad_parameter():
 
     with pytest.raises(IndexError):
         _decode_index(6, 5)
+
+def test_decode_index_integer():
+    """Test that _decode_index provides appropriate indexes into a collection"""
+    
+    a = [1, 2, 3]
+
+    #We should be able to make a slice that returns the same items as a direct indexing operation
+    for idx in [-2, -1, 0, 1, 2]:
+        indices_info = _decode_index(idx, len(a))
+        assert a[idx] == a[indices_info[0]]
+
