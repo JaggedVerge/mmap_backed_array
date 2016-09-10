@@ -118,3 +118,9 @@ def test_decode_old_slice():
     assert start == 0
     assert stop == 0
     assert length == 0
+
+    # Slice where the provided end is after the provided start creates a zero length
+    # when indexing into the collection
+    start, stop, length = _decode_old_slice(2, 1, len(shorter_test_collection))
+    assert length == 0
+    
