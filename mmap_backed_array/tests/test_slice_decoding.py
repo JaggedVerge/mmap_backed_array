@@ -3,7 +3,10 @@ Tests for slice decoding
 """
 import pytest
 
-from mmap_backed_array.slice_decoding import _decode_slice
+from mmap_backed_array.slice_decoding import (
+    _decode_index,
+    _decode_slice,
+)
 
 def test_decode_slice_bad_parameter():
     """Test that bad parameters to decode_slice raise"""
@@ -42,4 +45,12 @@ def test_decode_index_bad_parameter():
     """Test that bad parameters passed to decode_index raise"""
     s = slice(1,2,3)
     with pytest.raises(TypeError):
-        _decode_slice(s, "This is not a real size")
+        _decode_index(s, "This is not a real size")
+
+
+    #Invalid index values
+    with pytest.raises(IndexError):
+        _decode_index(-6, 5)
+
+    with pytest.raises(IndexError):
+        _decode_index(6, 5)

@@ -1,6 +1,7 @@
 """
 Decoding of slice information
 """
+import operator
 
 def _decode_old_slice(i, j, size):
     """Find (start, stop, length) information that a simple slice
