@@ -105,3 +105,9 @@ def test_decode_old_slice():
     assert start == 2
     assert stop == len(test_collection)
     assert length == 2
+
+    shorter_test_collection = ['a', 'b', 'c']
+    start, stop, length = _decode_old_slice(2, 1000, len(shorter_test_collection))
+    assert start == 2
+    assert stop == len(shorter_test_collection)
+    assert length == 1
