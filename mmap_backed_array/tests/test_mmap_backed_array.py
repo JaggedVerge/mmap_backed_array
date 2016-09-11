@@ -89,3 +89,9 @@ class Test_mmaparray:
 
     def test_mmap_typeerror(self):
         pytest.raises(TypeError, self.mmaparray, 'b', mmap=object())
+
+    def test_mmap_bad_typecode(self):
+        import array
+        floats_array = array.array('f', (1.0, 2.0))
+        with pytest.raises(TypeError):
+            self.mmaparray('c', data=floats_array)
