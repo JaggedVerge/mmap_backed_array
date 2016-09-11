@@ -91,7 +91,17 @@ class Test_mmaparray:
         pytest.raises(TypeError, self.mmaparray, 'b', mmap=object())
 
     def test_mmap_bad_typecode(self):
+        """If created from an array.array the typecodes must match"""
         import array
         floats_array = array.array('f', (1.0, 2.0))
         with pytest.raises(TypeError):
-            self.mmaparray('c', data=floats_array)
+            self.mmaparray('c', floats_array)
+
+    def test_mmap_from_array(self):
+        """Test mmaparray can be created from an array.array"""
+        import array
+        int_array = array.array('i', (-1, 0, 1))
+        test_mmap_array = self.mmaparray('i', int_array)
+        assert test_mmap_array[0] == -1
+        assert test_mmap_array[1] == 0
+        assert test_mmap_array[2] == 1
