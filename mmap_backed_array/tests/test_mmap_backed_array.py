@@ -128,3 +128,17 @@ class Test_mmaparray:
         # Can't get index that is past the beginning of the array
         with pytest.raises(IndexError):
             test_mmap_array[-4] = 0
+
+    def test_extend_with_array(self):
+        """Test mmaparray can be extended with array.array"""
+        import array
+        int_array = array.array('i', (0, 1, 2))
+        test_mmap_array = self.mmaparray('i', int_array)
+        assert test_mmap_array[0] == 0
+        assert test_mmap_array[1] == 1
+        assert test_mmap_array[2] == 2
+
+        extend_array = array.array('i', (3, 4))
+        test_mmap_array.extend(extend_array)
+        assert test_mmap_array[3] == 3
+        assert test_mmap_array[4] == 4
