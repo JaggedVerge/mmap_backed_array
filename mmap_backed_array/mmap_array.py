@@ -347,7 +347,7 @@ class mmaparray:
         if isinstance(value, mmaparray):
             ffi.cast("char*", self._data)[startpos:stoppos] = value.tobytes()
         else:
-            raise NotImplementedError("TODO: handle array.array memoryview")
+            ffi.cast("char*", self._data)[startpos:stoppos] = value.tobytes()#Can this be done with memoryview?
 
 
     def _frombytes(self, data):

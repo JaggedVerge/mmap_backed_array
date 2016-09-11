@@ -89,3 +89,90 @@ class Test_mmaparray:
 
     def test_mmap_typeerror(self):
         pytest.raises(TypeError, self.mmaparray, 'b', mmap=object())
+
+    def test_mmap_bad_typecode(self):
+        """If created from an array.array the typecodes must match"""
+        import array
+        floats_array = array.array('f', (1.0, 2.0))
+        with pytest.raises(TypeError):
+            self.mmaparray('c', floats_array)
+
+    def test_mmaparray_from_array(self):
+        """Test mmaparray can be created from an array.array"""
+        import array
+        int_array = array.array('i', (-1, 0, 1))
+        test_mmap_array = self.mmaparray('i', int_array)
+        assert test_mmap_array[0] == -1
+        assert test_mmap_array[1] == 0
+        assert test_mmap_array[2] == 1
+
+    def test_mmaparray_setitem(self):
+        """Test __setitem__ works as advertised"""
+        import array
+        int_array = array.array('i', (-1, 0, 1))
+        test_mmap_array = self.mmaparray('i', int_array)
+        assert test_mmap_array[0] == -1
+        assert test_mmap_array[1] == 0
+        assert test_mmap_array[2] == 1
+
+        test_mmap_array[0] = 100
+        assert test_mmap_array[0] == 100
+
+        test_mmap_array[-1] = 3333
+        assert test_mmap_array[-1] == 3333
+
+        # Can't get index past end of the array
+        with pytest.raises(IndexError):
+            test_mmap_array[3] = 0
+
+        # Can't get index that is past the beginning of the array
+        with pytest.raises(IndexError):
+            test_mmap_array[-4] = 0
+
+    def test_extend_with_array(self):
+        """Test mmaparray can be extended with array.array"""
+        import array
+        int_array = array.array('i', (0, 1, 2))
+        test_mmap_array = self.mmaparray('i', int_array)
+        assert test_mmap_array[0] == 0
+        assert test_mmap_array[1] == 1
+        assert test_mmap_array[2] == 2
+
+        extend_array = array.array('i', (3, 4))
+        test_mmap_array.extend(extend_array)
+        assert test_mmap_array[3] == 3
+        assert test_mmap_array[4] == 4
+
+    def test_setslice(self):
+        """Test that a slice can be assigned from a mmaparray"""
+        import array
+        int_array = array.array('i', (0, 1, 2))
+        test_mmap_array = self.mmaparray('i', int_array)
+
+        # Can't assign from types other than array types.
+        # This is due to the type restrictions for those types.
+        with pytest.raises(TypeError):
+            test_mmap_array[1:2] = [50]
+
+        different_type_array = self.mmaparray('f', array.array('f', (1.23,)))
+        # Type of the array must be the same to do a slice assignement
+        with pytest.raises(TypeError):
+            test_mmap_array[1:2] = different_type_array
+
+        assigning_array = self.mmaparray('i', array.array('i', (50,)))
+        test_mmap_array[1:2] = assigning_array
+        assert test_mmap_array[0] == 0
+        assert test_mmap_array[1] == 50
+        assert test_mmap_array[2] == 2
+
+    def test_setslice_from_array(self):
+        """Test that a slice can be assigned from an array.array containing same type"""
+        import array
+        int_array = array.array('i', (0, 1, 2))
+        test_mmap_array = self.mmaparray('i', int_array)
+
+        assigning_array = array.array('i', (50,))
+        test_mmap_array[1:2] = assigning_array
+        assert test_mmap_array[0] == 0
+        assert test_mmap_array[1] == 50
+        assert test_mmap_array[2] == 2
