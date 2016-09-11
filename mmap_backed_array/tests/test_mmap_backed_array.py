@@ -143,9 +143,8 @@ class Test_mmaparray:
         assert test_mmap_array[3] == 3
         assert test_mmap_array[4] == 4
 
-    @pytest.mark.xfail(reason="Not implemented yet")
     def test_setslice(self):
-        """Test that a slice can be assigned"""
+        """Test that a slice can be assigned from a mmaparray"""
         import array
         int_array = array.array('i', (0, 1, 2))
         test_mmap_array = self.mmaparray('i', int_array)
@@ -154,6 +153,19 @@ class Test_mmaparray:
         # This is due to the type restrictions for those types.
         with pytest.raises(TypeError):
             test_mmap_array[1:2] = [50]
+
+        assigning_array = self.mmaparray('i', array.array('i', (50,)))
+        test_mmap_array[1:2] = assigning_array
+        assert test_mmap_array[0] == 0
+        assert test_mmap_array[1] == 50
+        assert test_mmap_array[2] == 2
+
+    @pytest.mark.xfail(reason="Not implemented yet")
+    def test_setslice_from_array(self):
+        """Test that a slice can be assigned from an array.array containing same type"""
+        import array
+        int_array = array.array('i', (0, 1, 2))
+        test_mmap_array = self.mmaparray('i', int_array)
 
         assigning_array = array.array('i', (50,))
         test_mmap_array[1:2] = assigning_array
