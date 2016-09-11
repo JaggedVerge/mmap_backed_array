@@ -30,15 +30,26 @@ def test_decode_slice_bad_parameter():
     with pytest.raises(TypeError):
         _decode_slice(s, 10)
 
+    # Step size of 0 is invalid
     s = slice(1,2,0)
     with pytest.raises(ValueError):
         _decode_slice(s, 10)
 
+    # Bad types for start and stop should throw TypeError
     s = slice("Bad start type",2,1)
     with pytest.raises(TypeError):
         _decode_slice(s, 10)
 
     s = slice(1,"Bad stop type",1)
+    with pytest.raises(TypeError):
+        _decode_slice(s, 10)
+
+    # Different code path exists with negative steps, must retest for types in this case
+    s = slice("bad start type", 1, -1)
+    with pytest.raises(TypeError):
+        _decode_slice(s, 10)
+
+    s = slice(1, "bad stop typ", -1)
     with pytest.raises(TypeError):
         _decode_slice(s, 10)
 
