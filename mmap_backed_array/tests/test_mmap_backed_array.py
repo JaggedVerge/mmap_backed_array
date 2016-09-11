@@ -165,7 +165,6 @@ class Test_mmaparray:
         assert test_mmap_array[1] == 50
         assert test_mmap_array[2] == 2
 
-    @pytest.mark.xfail(reason="Not implemented yet")
     def test_setslice_from_array(self):
         """Test that a slice can be assigned from an array.array containing same type"""
         import array
