@@ -154,6 +154,11 @@ class Test_mmaparray:
         with pytest.raises(TypeError):
             test_mmap_array[1:2] = [50]
 
+        different_type_array = self.mmaparray('f', array.array('f', (1.23,)))
+        # Type of the array must be the same to do a slice assignement
+        with pytest.raises(TypeError):
+            test_mmap_array[1:2] = different_type_array
+
         assigning_array = self.mmaparray('i', array.array('i', (50,)))
         test_mmap_array[1:2] = assigning_array
         assert test_mmap_array[0] == 0
