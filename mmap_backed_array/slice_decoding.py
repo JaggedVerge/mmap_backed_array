@@ -20,7 +20,7 @@ def _decode_old_slice(i, j, size):
 def _decode_slice(s, size):
     """Find (start, stop, step, length) information that an extended slice
     represents in terms of indexes into a collection of the given size.
-    Note that this is necessary because slice.indices doesn't correctly decode these
+    Note that this function exists because slice.indices doesn't correctly decode these
     in some cases."""
     # validate slice
     if not isinstance(s, slice):

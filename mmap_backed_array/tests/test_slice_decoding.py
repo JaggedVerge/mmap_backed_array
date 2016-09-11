@@ -88,6 +88,18 @@ def test_decode_slice():
     #length
     assert indices_info[3] == 1
 
+def test_decode_slice_negative_step():
+    """Test that decoding slices wiht negative steps generates the correct indexing
+    into a collection. These are the cases which slice.indices doesn't quite work correctly."""
+    #Reversing the collection should give all indexes in original collection
+    a = [1,2,3,4]
+    sl = slice(len(a), None, -1)
+    start, stop, step, length = _decode_slice(sl, len(a))
+    assert start == 3
+    assert stop == -1
+    assert step == -1
+    assert length == len(a)
+
 def test_decode_old_slice():
     """Test that decoding a slice that contains no step information (as in step=1)
     produces the appropriate indexes into a collection"""
