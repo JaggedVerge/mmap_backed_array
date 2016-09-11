@@ -97,7 +97,7 @@ class Test_mmaparray:
         with pytest.raises(TypeError):
             self.mmaparray('c', floats_array)
 
-    def test_mmap_from_array(self):
+    def test_mmaparray_from_array(self):
         """Test mmaparray can be created from an array.array"""
         import array
         int_array = array.array('i', (-1, 0, 1))
@@ -105,3 +105,26 @@ class Test_mmaparray:
         assert test_mmap_array[0] == -1
         assert test_mmap_array[1] == 0
         assert test_mmap_array[2] == 1
+
+    def test_mmaparray_setitem(self):
+        """Test __setitem__ works as advertised"""
+        import array
+        int_array = array.array('i', (-1, 0, 1))
+        test_mmap_array = self.mmaparray('i', int_array)
+        assert test_mmap_array[0] == -1
+        assert test_mmap_array[1] == 0
+        assert test_mmap_array[2] == 1
+
+        test_mmap_array[0] = 100
+        assert test_mmap_array[0] == 100
+
+        test_mmap_array[-1] = 3333
+        assert test_mmap_array[-1] == 3333
+
+        # Can't get index past end of the array
+        with pytest.raises(IndexError):
+            test_mmap_array[3] = 0
+
+        # Can't get index that is past the beginning of the array
+        with pytest.raises(IndexError):
+            test_mmap_array[-4] = 0
