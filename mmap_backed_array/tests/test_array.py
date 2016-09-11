@@ -340,6 +340,10 @@ class BaseArrayTests:
         a.insert(-100, 20)
         assert repr(a) == "array('i', [20, 8, 2, 9, 7, 10])"
 
+        # Can't pop item that's not in the array
+        with raises(IndexError):
+            a.pop(100)
+
     def test_compare(self):
         for v1, v2, tt in (([1, 2, 3], [1, 3, 2], 'bhilBHIL'),
                          (b'abc', b'acb', 'c'),
