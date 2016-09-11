@@ -124,3 +124,7 @@ def test_decode_old_slice():
     start, stop, length = _decode_old_slice(2, 1, len(shorter_test_collection))
     assert length == 0
     
+    # Slice where the provided start is a greater index than the size of the collection 
+    # will create a length of 0 when indexing into the collection
+    start, stop, length = _decode_old_slice(9000, 1, len(shorter_test_collection))
+    assert length == 0
