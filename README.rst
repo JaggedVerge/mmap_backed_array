@@ -23,7 +23,11 @@ processes in python and processes using other languages you can use this library
 
 Usage
 -----
-If you don't provide a mmap backing an anonymous mmap is created to back the array.
+
+Instantiation:
+~~~~~~~~~~~~~~
+
+If you don't provide a file for mmap backing an anonymous mmap is created to back the array.
 
 .. code:: python
 
@@ -44,3 +48,51 @@ You can also provide a mmap file as backing.
 
 Note that this file can be shared with other processes, including ones
 that are not python.
+
+API
+~~~
+The API is designed to be as close to the standard library array_ module API as possible.
+
+Major functionality including but not limited to `append`, `extend`, `pop`, `tobytes` is supported.
+There are some slight incompatibilities currently, for example mmaparray has a typecode property but
+does not have the typecodes listing property.
+
+For example:
+
+.. code:: python
+
+    arr = mmaparray('I')
+    >>> arr.append(1)
+    >>> arr
+    array('I', [1])
+    >>> arr.extend([2,3,4])
+    >>> arr
+    array('I', [1, 2, 3, 4])
+
+You can also use the standard library arrays easily with the mmap backed arrays:
+
+.. code:: python
+
+    >>> from mmap_backed_array import mmaparray
+    >>> mmap_array = mmaparray('I', (1, 1, 1, 1))
+    >>> mmap_array
+    array('I', [1, 1, 1, 1])
+    >>> import array
+    >>> mmap_array[2:4] = array.array('I', (2, 2))
+    >>> mmap_array
+    array('I', [1, 1, 2, 2])
+
+
+Due to the way in which we are storing direct to arrays, just like in the standard library array_ the typecodes must match up:
+
+.. code:: python
+
+    >>> mmap_array.typecode
+    'I'
+    >>> mmap_array[2:4] = array.array('b', (3, 3))
+    Traceback (most recent call last):
+      File "<stdin>", line 1, in <module>
+      File "/home/janis/mmap_backed_array/mmap_backed_array/mmap_array.py", line 302, in __setitem__
+        'Can only assign array of same type to array slice'
+    TypeError: Can only assign array of same type to array slice
+
