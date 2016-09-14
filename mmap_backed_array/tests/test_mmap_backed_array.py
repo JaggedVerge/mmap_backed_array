@@ -169,10 +169,10 @@ class Test_mmaparray:
         arr = mmaparray('I', (1, 1, 1, 1))
         import array
         arr[2:4] = array.array('I', (2, 2))
-        assert arr[0] = 1
-        assert arr[1] = 1
-        assert arr[2] = 2
-        assert arr[3] = 2
+        assert arr[0] == 1
+        assert arr[1] == 1
+        assert arr[2] == 2
+        assert arr[3] == 2
 
 
     def test_setslice_from_array(self):
