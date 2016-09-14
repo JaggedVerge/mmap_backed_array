@@ -166,7 +166,7 @@ class Test_mmaparray:
         assert test_mmap_array[2] == 2
 
     def test_setslice_regression(self):
-        arr = mmaparray('I', (1, 1, 1, 1))
+        arr = self.mmaparray('I', (1, 1, 1, 1))
         import array
         arr[2:4] = array.array('I', (2, 2))
         assert arr[0] == 1
