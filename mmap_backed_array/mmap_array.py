@@ -348,6 +348,7 @@ class mmaparray:
             ffi.cast("char*", self._data)[startpos:stoppos] = value.tobytes()
         else:
             ffi.cast("char*", self._data)[startpos:stoppos] = value.tobytes()#Can this be done with memoryview?
+            #ffi.cast("char*", self._data)[startpos:stoppos] = memoryview(value)
 
 
     def _frombytes(self, data):
