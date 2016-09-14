@@ -165,6 +165,16 @@ class Test_mmaparray:
         assert test_mmap_array[1] == 50
         assert test_mmap_array[2] == 2
 
+    def test_setslice_regression(self):
+        arr = mmaparray('I', (1, 1, 1, 1))
+        import array
+        arr[2:4] = array.array('I', (2, 2))
+        assert arr[0] = 1
+        assert arr[1] = 1
+        assert arr[2] = 2
+        assert arr[3] = 2
+
+
     def test_setslice_from_array(self):
         """Test that a slice can be assigned from an array.array containing same type"""
         import array
