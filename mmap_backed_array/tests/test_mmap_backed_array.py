@@ -97,6 +97,14 @@ class Test_mmaparray:
         with pytest.raises(TypeError):
             self.mmaparray('c', floats_array)
 
+    def test_mmap_fromstring(self):
+        str_mmap_array = self.mmaparray('u', "abcd")
+        assert str_mmap_array.tounicode() == "abcd"
+
+        # Can only instantiate from string if unicode type
+        with pytest.raises(ValueError):
+            self.mmaparray('i', "abcd")
+
     def test_mmap_typecodes(self):
         import mmap_backed_array
         assert 'c' in mmap_backed_array.typecodes

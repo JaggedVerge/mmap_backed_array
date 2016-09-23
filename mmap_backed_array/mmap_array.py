@@ -541,8 +541,11 @@ class mmaparray:
     _tolist = tolist
 
     def tostring(self):
-        """Returns a bytes object representing the array.
-        Note that this is an alias of tobytes method"""
+        """
+        Deprecated.
+        Returns a bytes object representing the array.
+        Note that this is an alias of tobytes method
+        """
         return self.tobytes()#make this an alias for tobytes like cpython >3.2 ?
     _tostring = tostring
 
@@ -554,7 +557,8 @@ class mmaparray:
     def tounicode(self):
         """Return a regular python3 (unicode) string"""
         if self.typecode != 'u':
-            raise ValueError
+            # Note array.array raises ValueError in this case
+            raise ValueError("tounicode() may only be called on unicode type arrays")
         return self.tobytes().decode('utf-32le') #Do we need to check that ffi.sizeof('wchar_t') == 4 first?
     _tounicode = tounicode
 
