@@ -340,9 +340,18 @@ class BaseArrayTests:
         a.insert(-100, 20)
         assert repr(a) == "array('i', [20, 8, 2, 9, 7, 10])"
 
+
+    def test_pop_indexes(self):
+        a = self.array('i', [1, 2, 3, 1, 1])
+
         # Can't pop item that's not in the array
         with raises(IndexError):
             a.pop(100)
+
+        # Can only pop item that's at most the negative length of the array
+        with raises(IndexError):
+            a.pop(-6)
+        
 
     def test_compare(self):
         for v1, v2, tt in (([1, 2, 3], [1, 3, 2], 'bhilBHIL'),
