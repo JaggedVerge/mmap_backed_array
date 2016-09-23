@@ -152,6 +152,10 @@ class Test_mmaparray:
         assert test_mmap_array[3] == 3
         assert test_mmap_array[4] == 4
 
+        # Can only extend with same type
+        with pytest.raises(TypeError):
+            test_mmap_array.extend(array.array('f'), (1.23, 3.45))
+
     def test_setslice(self):
         """Test that a slice can be assigned from a mmaparray"""
         import array
