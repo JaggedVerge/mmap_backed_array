@@ -7,19 +7,24 @@ mmap_backed_array
     :target: https://coveralls.io/github/JaggedVerge/mmap_backed_array?branch=master
 
 This library lets you create arrays with mmap backing.
-The interface is very similar to the array_ module in the standard library.
-You can construct mmap arrays from the standard library arrays.
+The interface is designed to be very similar to the array_ module in the standard library.
 
 .. _array: https://docs.python.org/3/library/array.html
 
 Use case
 --------
-This library was originally created to support the usage of very large precomputed lookup tables across multiple thread/processes.
-Because of the large size of these tables creating copies per process would have been very expensive in terms of memory usage.
+This library gives you the ability to have a shared memory space between different processes.
+This can be helpful to work around some of the concurrency limitations present in some Python implementations.
+
+This library was originally created to support the usage of very large precomputed lookup tables across multiple threads/processes.
+Because of the large size of these tables creating copies for each process would have been very expensive in terms of memory usage.
 By creating a mmap backing and accessing read-only multiple processes could read from the same memory hence leading to memory savings.
 
 There's also another use case when doing interprocess communications, if you want a quick-and-dirty shared memory between
 processes in python and processes using other languages you can use this library to share a flat memory space between them.
+
+If you just need some simple shared memory and don't want, or can't, bring in a more complicated dependency this might be what you need.
+For more complicated concurrency tasks there may be more suitable libraries.
 
 Usage
 -----
