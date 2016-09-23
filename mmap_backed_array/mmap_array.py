@@ -469,6 +469,7 @@ class mmaparray:
 
 
     def fromlist(self, items):
+        """Append items from the list."""
         data = array.array(self.typecode)
         data.fromlist(items)
         if data:
@@ -560,7 +561,7 @@ class mmaparray:
         if self.typecode != 'u':
             # Note array.array raises ValueError in this case
             raise ValueError("tounicode() may only be called on unicode type arrays")
-        return self.tobytes().decode('utf-32le') #Do we need to check that ffi.sizeof('wchar_t') == 4 first?
+        return self._tobytes().decode('utf-32le') #Do we need to check that ffi.sizeof('wchar_t') == 4 first?
     _tounicode = tounicode
 
     itemsize = property(operator.attrgetter('_itemsize'))
