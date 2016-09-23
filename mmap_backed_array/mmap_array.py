@@ -537,6 +537,7 @@ class mmaparray:
             self._data[j] = tmp
 
     def tolist(self):
+        """Convert the array to an ordinary list with the same items."""
         return list(self)
     _tolist = tolist
 
