@@ -97,6 +97,15 @@ class Test_mmaparray:
         with pytest.raises(TypeError):
             self.mmaparray('c', floats_array)
 
+    def test_mmap_typecodes(self):
+        import mmap_backed_array
+        assert 'c' in mmap_backed_array.typecodes
+        assert 'b' in mmap_backed_array.typecodes
+        assert 'u' in mmap_backed_array.typecodes
+        assert 'i' in mmap_backed_array.typecodes
+        assert 'f' in mmap_backed_array.typecodes
+        assert 'd' in mmap_backed_array.typecodes
+
     def test_mmaparray_from_array(self):
         """Test mmaparray can be created from an array.array"""
         import array
