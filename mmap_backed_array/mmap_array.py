@@ -430,11 +430,15 @@ class mmaparray:
             self._mmap[pos:pos+self.itemsize] = self._mmap[pos:pos+self.itemsize][::-1]
 
     def count(self, x):
-        """Return the number of occurrences of the given item in the array."""
+        """Return the number of occurrences of the given item in the array.
+        :x: the item we are counting in the array
+        """
         return sum(x==y for y in self)
 
     def extend(self, items):
-        """Append items to the end of the array"""
+        """Append items to the end of the array
+        :items: items to append
+        """
         if isinstance(items, array.array):
             if items.typecode != self.typecode:
                 raise TypeError('can only extend with array of same kind')

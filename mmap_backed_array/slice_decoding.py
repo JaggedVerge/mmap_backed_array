@@ -5,7 +5,11 @@ import operator
 
 def _decode_old_slice(i, j, size):
     """Find (start, stop, length) information that a simple slice
-    represents in terms of indexes into a collection of the given size"""
+    represents in terms of indexes into a collection of the given size
+    :i: start index
+    :j: end index
+    :size: the size of the collection
+    """
     if i < 0:
         i = 0
     elif i > size:
@@ -21,7 +25,11 @@ def _decode_slice(s, size):
     """Find (start, stop, step, length) information that an extended slice
     represents in terms of indexes into a collection of the given size.
     Note that this function exists because slice.indices doesn't correctly decode these
-    in some cases."""
+    in some cases.
+
+    :s: slice object
+    :size: the size of the collection
+    """
     # validate slice
     if not isinstance(s, slice):
         raise TypeError('s must be a slice object')
@@ -126,7 +134,11 @@ def _decode_slice(s, size):
 
 def _decode_index(index_or_slice, size):
     """Get the (start, stop, step, length) information that a simple index or a slice
-    represents in terms of indexes into a collection of the given size"""
+    represents in terms of indexes into a collection of the given size.
+
+    :index_or_slice: the index or slice object
+    :size: the size of the collection
+    """
     if not isinstance(index_or_slice, slice):
         index = operator.index(index_or_slice)
         if not isinstance(size, int):
