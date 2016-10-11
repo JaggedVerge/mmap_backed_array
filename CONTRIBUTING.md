@@ -14,7 +14,7 @@ GitHub, clone, and develop on a branch. Steps:
    by clicking on the 'Fork' button near the top right of the page. This creates
    a copy of the code under your GitHub user account.
 
-2. Clone your fork of the scikit-learn repo from your GitHub account to your local disk:
+2. Clone your fork of the mmap_backed_array repo from your GitHub account to your local disk:
 
    ```bash
    $ git clone git@github.com:YourLogin/mmap_backed_array.git
