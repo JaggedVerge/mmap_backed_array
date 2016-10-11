@@ -6,6 +6,9 @@ mmap_backed_array
 .. image:: https://coveralls.io/repos/JaggedVerge/mmap_backed_array/badge.svg?branch=master&service=github
     :target: https://coveralls.io/github/JaggedVerge/mmap_backed_array?branch=master
 
+.. image:: https://badge.fury.io/py/mmap_backed_array.png
+    :target: https://badge.fury.io/py/mmap_backed_array
+
 This library lets you create arrays with mmap backing.
 The interface is designed to be very similar to the array_ module in the standard library.
 
