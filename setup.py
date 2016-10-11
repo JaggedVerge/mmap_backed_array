@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='mmap_backed_array',
-      version='0.3.0',
+      version='0.3.1',
       description='Arrays with mmap backing',
       long_description=open('README.rst').read(),
       url='https://github.com/JaggedVerge/mmap_backed_array',
