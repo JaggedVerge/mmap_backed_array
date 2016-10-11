@@ -1,11 +1,12 @@
 from setuptools import setup
 
 setup(name='mmap_backed_array',
-      version='0.2.1',
+      version='0.3.0',
       description='Arrays with mmap backing',
       long_description=open('README.rst').read(),
       url='https://github.com/JaggedVerge/mmap_backed_array',
       author='Janis Lesinskis',
+      author_email='janis@jaggedverge.com',
       license='GPLv3',
       packages=['mmap_backed_array'],
       classifiers = [
