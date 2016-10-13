@@ -54,8 +54,8 @@ Pull Request Checklist
 
 Please follow the following rules before you submit a pull request:
 
--  Follow the
-   [coding-guidelines](http://www.jaggedverge.com/python-coding-guidelines/).
+-  Follow the JaggedVerge
+   [Python coding guidelines](http://www.jaggedverge.com/python-coding-guidelines/).
 
 -  If your pull request addresses an issue, please use the pull request title
    to describe the issue and mention the issue number in the pull request description.
@@ -93,7 +93,7 @@ tools:
   $ pylint path/to/code
   ```
 
-Pylint errors are indictive of critical issues, if code contains Pylint errors your pull request will most likely be declined.
+Pylint errors are indicative of critical issues, if code contains Pylint errors your pull request will most likely be declined.
 
 Filing bugs
 -----------
