@@ -64,8 +64,7 @@ Using mmaparray's is designed to be similar to array.array.
 Another goal is to make interoperating with array.array as easy as possible.
 
 Major functionality including (but not limited) to ``append``, ``extend``, ``pop`` and ``tobytes`` is supported.
-There are some slight incompatibilities currently, for example mmaparray has a typecode property but
-does not have the typecodes listing property.
+There may be some slight API incompatibilities currently, if there is anything substantial in the array API that is not implemented please open an issue.
 
 For example:
 
