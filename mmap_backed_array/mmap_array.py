@@ -41,8 +41,8 @@ else:
         2) The linux mremap function fails to resize the underlying shm file (see
             http://lists.debian.org/debian-kernel/2011/05/msg00368.html).
         """
-        data = memoryview(data)
-        size = len(data)#TODO: check that this is actually correct, might need to be data.nbytes given this is a memoryview
+        data_view = memoryview(data)
+        size = data_view.nbytes
         name_str = '/{}'.format(os.getpid())
         name = bytes(name_str, 'ascii')
         fd = C.shm_open(name, os.O_RDWR|os.O_CREAT|os.O_EXCL, 0o600)
@@ -53,7 +53,7 @@ else:
             if C.shm_unlink(name) != 0:
                 errno = ffi.errno
                 raise OSError(errno, os.strerror(errno))
-            os.write(fd, data)
+            os.write(fd, data_view)
             result = _mmap.mmap(fd, size)
         finally:
             os.close(fd)
