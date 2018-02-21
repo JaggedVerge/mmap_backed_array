@@ -1,7 +1,8 @@
 
 Contributing to MMAP backed array
 ==================================
-The following is a guide for contributing the the MMAP backed array library.
+We welcome contributions to this library, please take a moment to read through 
+the following guide to making contributions.
 
 How to contribute
 -----------------
@@ -73,11 +74,11 @@ Please follow the following rules before you submit a pull request:
    [task list](https://github.com/blog/1375-task-lists-in-gfm-issues-pulls-comments)
    in the PR description.
 
--  When adding additional functionality, provide at least one
+-  When adding additional functionality please provide at least one
    example script in the ``examples/`` folder. Have a look at other
    examples for reference. Examples should demonstrate why the new
    functionality is useful in practice and, if possible, compare it
-   to other methods available in scikit-learn.
+   to what is already available.
 
 -  Because this is a core library documentation and high-coverage tests are necessary for enhancements
    to be accepted.
@@ -93,7 +94,7 @@ tools:
   $ pylint path/to/code
   ```
 
-Pylint errors are indicative of critical issues, if code contains Pylint errors your pull request will most likely be declined.
+Pylint errors are indicative of critical issues, if code contains Pylint errors your pull request will be declined.
 
 Filing bugs
 -----------

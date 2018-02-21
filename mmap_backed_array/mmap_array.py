@@ -1,25 +1,64 @@
 """mmap backed array datastructure"""
 import mmap
 import array, os, operator
+import platform
 
 from .slice_decoding import (
     _decode_old_slice,
     _decode_index,
 )
 
-
 _mmap = mmap
 
 from cffi import FFI
 ffi = FFI()
-ffi.cdef("""
-typedef unsigned int mode_t;
-int shm_open(const char *name, int oflag, mode_t mode);
-int shm_unlink(const char *name);
-""")
-C = ffi.verify("""
-#include <sys/mman.h>
-""", libraries=["rt"])
+
+if platform.system() == "Windows":
+    C = None
+    def anon_mmap(data):
+        """Create anonymous mmap for windows"""
+        ANON_MAPPING_FILENO = -1
+        data_view = memoryview(data)
+        mm =_mmap.mmap(ANON_MAPPING_FILENO, data_view.nbytes)
+        mm[:] = data_view
+        return mm
+else:
+    ffi.cdef("""
+    typedef unsigned int mode_t;
+    int shm_open(const char *name, int oflag, mode_t mode);
+    int shm_unlink(const char *name);
+    """)
+    C = ffi.verify("""
+    #include <sys/mman.h>
+    """, libraries=["rt"])
+
+
+    def anon_mmap(data):
+        """Create an anonymous mmap that can be resized.
+        This exists because 
+        1) PyPys mmap wrapper erroneously tries to truncate the -1 file
+            descriptor when resizing.
+        2) The linux mremap function fails to resize the underlying shm file (see
+            http://lists.debian.org/debian-kernel/2011/05/msg00368.html).
+        """
+        data_view = memoryview(data)
+        size = data_view.nbytes
+        name_str = '/{}'.format(os.getpid())
+        name = bytes(name_str, 'ascii')
+        fd = C.shm_open(name, os.O_RDWR|os.O_CREAT|os.O_EXCL, 0o600)
+        if fd < 0:
+            errno = ffi.errno
+            raise OSError(errno, os.strerror(errno))
+        try:
+            if C.shm_unlink(name) != 0:
+                errno = ffi.errno
+                raise OSError(errno, os.strerror(errno))
+            os.write(fd, data_view)
+            result = _mmap.mmap(fd, size)
+        finally:
+            os.close(fd)
+        return result
+
 
 
 _typecode_to_type = {
@@ -34,27 +73,6 @@ _typecode_to_type = {
 __all__ = [
     "anon_mmap", "C", "ffi", "mmaparray",
 ]
-
-def anon_mmap(data):
-    """Create an anonymous mmap that can be resized"""
-    data = memoryview(data)
-    size = len(data)#TODO: check that this is actually correct, might need to be data.nbytes given this is a memoryview
-    name_str = '/{}'.format(os.getpid())
-    name = bytes(name_str, 'ascii')
-    fd = C.shm_open(name, os.O_RDWR|os.O_CREAT|os.O_EXCL, 0o600)
-    if fd < 0:
-        errno = ffi.errno
-        raise OSError(errno, os.strerror(errno))
-    try:
-        if C.shm_unlink(name) != 0:
-            errno = ffi.errno
-            raise OSError(errno, os.strerror(errno))
-        os.write(fd, data)
-        result = _mmap.mmap(fd, size)
-    finally:
-        os.close(fd)
-    return result
-
 
 import ctypes
 def address_of_buffer(buf):
