@@ -3,6 +3,7 @@ Tests are a modified version of the pypy array unit tests."""
 import sys
 import py
 from pytest import raises
+import pytest
 
 class BaseArrayTests:
     def test_ctor_basic(self):
@@ -542,12 +543,14 @@ class BaseArrayTests:
         assert self.array('u', 'hello').tounicode() == 'hello'
 
 
+@pytest.mark.usefixtures(['tmp_path'])
 class TestArray(BaseArrayTests):
-    def setup_class(cls, tmp_path):
+    def setup_class(cls):
         import mmap_backed_array
         cls.array = mmap_backed_array.mmaparray
         import struct
         cls.struct = struct
+        tmp_path.mkdir()
         tmp_file_path = tmp_path / 'tmpfile'
         cls.tempfile = str(tmp_file_path)
         cls.maxint = sys.maxsize #get the biggest addressable size
