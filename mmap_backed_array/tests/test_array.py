@@ -548,5 +548,5 @@ class TestArray(BaseArrayTests):
         cls.array = mmap_backed_array.mmaparray
         import struct
         cls.struct = struct
-        cls.tempfile = str(py.test.ensuretemp('mmaparray').join('tmpfile'))
+        cls.tempfile = str(py.test.tmp_path.join('tmpfile'))
         cls.maxint = sys.maxsize #get the biggest addressable size
